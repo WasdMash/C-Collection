@@ -15,7 +15,7 @@ class Fighter{
         getPlayerNum();
 
         //Example of operator overloading - we are overloading the > operator
-        Fighter operator>(Fighter &other) const;
+        bool operator>(const Fighter &other) const;
 
 }; //Don't forget the semi-colon after the class definition
 
