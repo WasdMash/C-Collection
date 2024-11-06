@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -21,6 +22,31 @@ string menuInput(){
     //Taking the string input which represents the choice that the user has made
     while (input != "1" && input != "2" && input != "3" && input != "4") cin >> input;
     return input;
+}
+
+string findMember(ofstream &textFile, string &memberID, string &password){
+    //Should return the newLine storing all of the values of this string
+    string newline = "";
+    getline(textFile, newline);
+    if(!textFile.eof()){
+        //Split the string into an array of strings, separating each string with commas like a CSV file
+        stringstream memberDetails(newline);
+        string membershipID = " ";
+        string thisPassword = " "; // temporary string to store split string
+        //This skips to the third value in the string separated by the comma delimiter
+        for(int i=0;i<3;i++) getline(memberDetails, membershipID, ",");
+
+        //Now, we should compare if this membershipID is equal to the one inputted by the user
+        if(memberID == membershipID){
+            //We get the password which should be after the membershipID stored in the file
+            getline(memberDetails, thisPassword, ",");
+            if(password == thisPassword){
+                //Cool, this is our member
+                //Now, let's get all of their data from this string and store it in a Member object
+                stringstream foundMemberDetails(newline);
+            }
+        }
+    }
 }
 
 int main(){
@@ -43,13 +69,15 @@ int main(){
             cout << endl << "Please enter your password: ";
             cin >> password;
                 //Make sure that we find a match in the .txt file
-                    //If so, create a Member() object for this person and print out their details except their password
+            
+            //Print out all of the details of this member object as shown in the PDF
             break;
         case "2":
             //Registering a new user
             string name;
             string membershipID;
-            string password; 
+            string password;
+            string[] borrowedBooks; 
             int age;
             cout << "Please enter your name: ";
             cin >> name;
@@ -59,9 +87,9 @@ int main(){
             cin >> membershipID;
             cin << endl << "Please enter your password";
             cin >> password;
-            UserDataBase << name << " " << to_string(age) << " " << membershipID << " " << password << " ";
-            Member newMember = new Member(name, age, membershipID, new string[]);
-            //Print out all of the details of this member object as shown in the PDF
+            UserDataBase << name << "," << to_string(age) << "," << membershipID << "," << password << ",";
+            //Don't forget to ask the user which books they would want to borrow
+                //Store that in the line as well
             break;
         case "3":
             //Borrowing a book
