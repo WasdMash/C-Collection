@@ -43,7 +43,14 @@ string findMember(ofstream &textFile, string &memberID, string &password){
             if(password == thisPassword){
                 //Cool, this is our member
                 //Now, let's get all of their data from this string and store it in a Member object
+                memberDetails.clear(); //Clears and empties the data stored in memberDetails - could be optimised later on perhaps
                 stringstream foundMemberDetails(newline);
+                string basicValues[3]; //I will store the name, age and membershipID in this
+                sting tempString = "";
+                for(int i=0;i<3;i++){
+                    getline(foundMemberDetails, basicValues[i], ",");
+                }
+                getline
             }
         }
     }
