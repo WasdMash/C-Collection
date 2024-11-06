@@ -50,7 +50,8 @@ string findMember(ofstream &textFile, string &memberID, string &password){
                 for(int i=0;i<3;i++){
                     getline(foundMemberDetails, basicValues[i], ",");
                 }
-                getline
+                //This is the password which we aren't storing
+                getline(foundMemberDetails, tempString, ",");
             }
         }
     }

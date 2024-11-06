@@ -47,4 +47,8 @@ int main(){
     cout << setw(64) << right << s1 <<endl;
     cout << setw(64) << right << s2 <<endl;
     cout << setw(64) << right << s3 <<endl;
+
+    cout << setfill('-') << setw(64) << right << s1 <<endl;
+    cout << setfill('-') << setw(64) << right << s2 <<endl;
+    cout << setfill('-') << setw(64) << right << s3 <<endl;
     }
