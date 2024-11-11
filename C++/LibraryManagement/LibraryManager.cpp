@@ -24,37 +24,42 @@ string menuInput(){
     return input;
 }
 
-string findMember(ofstream &textFile, string &memberID, string &password){
+string findMember(string &memberID, string &password){
     //Should return the newLine storing all of the values of this string
+    ifstream textfile("memberships.txt");
     string newline = "";
     getline(textFile, newline);
-    if(!textFile.eof()){
-        //Split the string into an array of strings, separating each string with commas like a CSV file
-        stringstream memberDetails(newline);
-        string membershipID = " ";
-        string thisPassword = " "; // temporary string to store split string
-        //This skips to the third value in the string separated by the comma delimiter
-        for(int i=0;i<3;i++) getline(memberDetails, membershipID, ",");
+    if(textfile){
+        //This will only run if the text file can be successfully opened
+        while(!textFile.eof()){
+            //Split the string into an array of strings, separating each string with commas like a CSV file
+            stringstream memberDetails(newline);
+            string membershipID = " ";
+            string thisPassword = " "; // temporary string to store split string
+            //This skips to the third value in the string separated by the comma delimiter
+            for(int i=0;i<3;i++) getline(memberDetails, membershipID, ",");
 
-        //Now, we should compare if this membershipID is equal to the one inputted by the user
-        if(memberID == membershipID){
-            //We get the password which should be after the membershipID stored in the file
-            getline(memberDetails, thisPassword, ",");
-            if(password == thisPassword){
-                //Cool, this is our member
-                //Now, let's get all of their data from this string and store it in a Member object
-                memberDetails.clear(); //Clears and empties the data stored in memberDetails - could be optimised later on perhaps
-                stringstream foundMemberDetails(newline);
-                string basicValues[3]; //I will store the name, age and membershipID in this
-                sting tempString = "";
-                for(int i=0;i<3;i++){
-                    getline(foundMemberDetails, basicValues[i], ",");
+            //Now, we should compare if this membershipID is equal to the one inputted by the user
+            if(memberID == membershipID){
+                //We get the password which should be after the membershipID stored in the file
+                getline(memberDetails, thisPassword, ",");
+                if(password == thisPassword){
+                    //Cool, this is our member
+                    //Now, let's get all of their data from this string and store it in a Member object
+                    memberDetails.clear(); //Clears and empties the data stored in memberDetails - could be optimised later on perhaps
+                    stringstream foundMemberDetails(newline);
+                    string basicValues[3]; //I will store the name, age and membershipID in this
+                    sting tempString = "";
+                    for(int i=0;i<3;i++){
+                        getline(foundMemberDetails, basicValues[i], ",");
+                    }
+                    //This is the password which we aren't storing
+                    getline(foundMemberDetails, tempString, ",");
                 }
-                //This is the password which we aren't storing
-                getline(foundMemberDetails, tempString, ",");
             }
         }
     }
+    
 }
 
 int main(){
@@ -95,7 +100,7 @@ int main(){
             cin >> membershipID;
             cin << endl << "Please enter your password";
             cin >> password;
-            UserDataBase << name << "," << to_string(age) << "," << membershipID << "," << password << ",";
+            UserDataBase << name << "," << age << "," << membershipID << "," << password << ",";
             //Don't forget to ask the user which books they would want to borrow
                 //Store that in the line as well
             break;
