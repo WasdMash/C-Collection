@@ -34,6 +34,8 @@ void print_array(string &array, int size){
 int main(){
     int array[] = {1,2,3,4,5};
     char word[] = {'a','b','c','d','e'};
+    string arr2[4] = {"hi","how","are","you"};
+    
     print_array(array);
     print_array(word,5);
 
