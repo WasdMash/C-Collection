@@ -147,8 +147,10 @@ int main(){
             int booksToBorrow = 0;
             int booksBorrowed = 0;
             //Get the user's information here
+                //Bruh - cin only reads up to the first whitespace - why?!
+                //Why do I have to use getline to get the full string, man?
             cout << "Please enter your name: ";
-            cin >> name;
+            getline(cin,name);
 
             cout << endl << "Please enter your age: ";
             cin >> age; 
@@ -173,9 +175,9 @@ int main(){
                 if(i < booksBorrowed){
                     //Ask them for the name of the book to borrow
                     cout << "Please enter the name of the book you are borrowing: ";
-                    cin >> bookName;
+                    getline(cin,bookName);
                     cout << endl << "Please enter the author of this book: ";
-                    cin >> bookAuthor;
+                    getline(cin,bookAuthor);
                         //Could ask them first for the book name and user the \" to show the quotations around it
                         //Then ask them for the author and stick a "by" in-between them for nice visualisation
                     //Replace this space placeholder with that name of the book
@@ -198,9 +200,9 @@ int main(){
                 //This will indicate the first gap where the user can borrow another book
 
             cout << "Please enter the name of the book you are borrowing: ";
-            cin >> bookName;
+            getline(cin,bookName);
             cout << endl << "Please enter the author of this book: ";
-            cin >> bookAuthor;
+            getline(cin,bookAuthor);
 
             bool foundUser = false;
             int lineToReplace = 0;
