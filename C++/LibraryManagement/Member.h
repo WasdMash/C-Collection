@@ -2,44 +2,33 @@
 #define MEMBER_H
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class Member{
     public:
         //Trying a one-line constructor like used in Lab 2
-        Member();
-        Member(string name, int age, string membershipID, string[] borrowedBooks);
+        //This neat line should use C++11 to create an empty object
+        Member() = default;
+        Member(string name, int age, string membershipID, vector<string> borrowedBooks);
 
-        ostream& operator<<(ostream &os, const Member &other)
-        {
-            os << "Your age is " << other.age << endl
-            << "Your membership ID is " << other.membershipID << "." << endl
-            "Your borrowed books are: " << endl;
-   
-            if(arr != 0){
-                int size = sizeof(borrowedBooks) / sizeof(borrowedBooks[0]);
-                for(int i=0;i<size<i++){
-                    //Could come back to this later to manually add the quotation marks to the book titles
-                    os << " - " << borrowedBooks[i] << endl;
-                }
-            }
+        friend ostream& operator<<(ostream &os, const Member& other);
 
-            return os;
-        }
-
-        void getName(){
+        string getName(){
             return name;
+        };
+
+        void setName(string newname){
+            name = newname;
         }
 
     private:
         string name;
         int age;
         string membershipID;
-        string[] borrowedBooks;
-
-    
-        
-}
+        vector<string> borrowedBooks;
+       
+};
 
 #endif

@@ -8,6 +8,8 @@
         "system_error": "cpp",
         "xlocale": "cpp",
         "ios": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "vector": "cpp",
+        "xutility": "cpp"
     }
 }

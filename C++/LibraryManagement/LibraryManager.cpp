@@ -1,17 +1,32 @@
 #include "Member.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
-#include <bits/stdc++.h>
 #include <cstdio>
 
 using namespace std;
 
-Member::Member(string name, int age, string membershipID, string borrowedBooks[]){
+Member::Member(string name, int age, string membershipID, vector<string> borrowedBooks){
     name = name;
     age = age;
     membershipID = membershipID;
     borrowedBooks = borrowedBooks;
+}
+
+ostream& operator<<(ostream &os, const Member &other)
+{
+    os << "Your age is " << other.age << endl
+    << "Your membership ID is " << other.membershipID << "." << endl << "Your borrowed books are: " << endl;
+
+    if(other.borrowedBooks.size() != 0){
+        for(int i=0;i<other.borrowedBooks.size();i++){
+            //Could come back to this later to manually add the quotation marks to the book titles
+            os << " - " << other.borrowedBooks[i] << endl;
+        }
+    }
+
+    return os;
 }
 
 char menuInput(){
@@ -29,56 +44,69 @@ Member findMember(string &memberID, string &password){
     ifstream reader("memberships.txt");
 
     //Should return the new Line storing all of the values of this string
-    string newline = "";
+    string newline;
     getline(reader, newline);
     if(!reader.eof()){
         //Split the string into an array of strings, separating each string with commas like a CSV file
-        stringstream memberDetails(newline);
-        string membershipID = " ";
-        string thisPassword = " "; // temporary string to store split string
-        //This skips to the third value in the string separated by the comma delimiter
-        for(int i=0;i<3;i++) getline(memberDetails, membershipID, ",");
+        string del = ",";
+        string userInfo = newline;
+        string thisPassword;
+
+        //Apparently, I can't use getline on a stringstream so I'll need another way to split a string using ,
+        auto pos = userInfo.find(del);
+        //This loop should fetch the string starting with the membershipID
+        for(int i=0;i<2;i++){
+            userInfo.erase(0, pos+del.length());
+            pos = userInfo.find(del); 
+        }
 
         //Now, we should compare if this membershipID is equal to the one inputted by the user
-        if(memberID == membershipID){
+        if(memberID == userInfo.substr(0,pos)){
             //We get the password which should be after the membershipID stored in the file
-            getline(memberDetails, thisPassword, ",");
-            if(password == thisPassword){
+            userInfo.erase(0, pos+del.length());
+            pos = userInfo.find(del);
+
+            if(password == userInfo.substr(0,pos)){
                 //Cool, this is our member
                 //Now, let's get all of their data from this string and store it in a Member object
-                memberDetails.clear(); //Clears and empties the data stored in memberDetails - could be optimised later on perhaps
-                stringstream foundMemberDetails(newline);
+
                 string basicValues[3]; //I will store the name, age and membershipID in this
-                string tempString = "";
                 for(int i=0;i<3;i++){
-                    getline(foundMemberDetails, basicValues[i], ",");
+                    basicValues[i] = newline.substr(0,pos);
+                    newline.erase(0, pos+del.length());
+                    pos = newline.find(del); 
                 }
+
                 //This is the password which we aren't storing
-                getline(foundMemberDetails, tempString, ",");
+                newline.erase(0, pos+del.length());
+                pos = newline.find(del);
 
                 //From this point onwards, we should just be fetching the borrowed books of this user
-                int arrayLength = 0;
-                string borrowedBooks[10]; //Could use arraycpy() to double array size when threatened to fill up completely
-                //Use an arraycpy to copy values into a smaller array of the right size;
-                while(getline(foundMemberDetails, tempString, ",")){
-                    borrowedBooks[arrayLength++] = tempString;
+                vector<string> borrowedBooks; 
+
+                while(pos != string::npos){
+                    borrowedBooks.push_back(newline.substr(0,pos));
+                    newline.erase(0, pos+del.length());
+                    pos = newline.find(del);
                 }
 
-                foundMemberDetails.close();
                 //stoi converts strings to integers
-                Member foundMember = new Member(basicValues[0], stoi(basicValues[1]), basicValues[2], thisPassword, borrowedBooks);
+                //OStream requires a static object, not a dynamically ccreated one
+                Member foundMember(basicValues[0], stoi(basicValues[1]), basicValues[2], borrowedBooks);
                 return foundMember;
             }
         }
     }
     reader.close();
     //If we fail to find the member, then I'll return an empty Member with no defined variables
-    Member emptyBoi = new Member();
+    Member emptyBoi("ERROR",-12,"ERROR", vector<string>(1," "));
     return emptyBoi;
 }
 
 int main(){
     ofstream UserDataBase("memberships.txt");
+    ifstream ReadMemberInfo("memberships.txt");
+    
     bool loggedIn = false;
     string loggedUserId;
     string loggedPassword;
@@ -88,8 +116,8 @@ int main(){
 
     while(choice != '4'){
         if(!UserDataBase) ofstream UserDataBase("memberships.txt");
-        switch(choice){
-        case "1":
+        if(ReadMemberInfo) ifstream ReadMemberInfo("memberships.txt");
+        if(choice == '1'){
             //Logging in as a user
                 //Prompt them to enter a membershipID and a password
             cout << "Please enter your membershipID: ";
@@ -99,15 +127,20 @@ int main(){
             //Make sure that we find a match in the .txt file
                 //Could maybe return an empty Member object if we fail to find this user
             Member returningUser = findMember(loggedUserId, loggedPassword);
-            //Print a "Welcome message first"
-            cout << "Welcome " << returningUser.getName() << "!" << endl;
-            //Then print out the object
-            cout << returningUser;
+            if(returningUser.getName() != "ERROR"){
+                //Print a "Welcome message first"
+                cout << "Welcome " << returningUser.getName() << "!" << endl;
+                //Then print out the object
+                cout << returningUser;
+            }
+            else{
+                cout << "User is not found in our system. I'd recommend that you create a new account." << endl;
+            }
 
             //Resets getline() to start from the top
-            UserDataBase.seekg(0);
-            break;
-        case "2":
+            UserDataBase.close();
+        }
+        else if(choice == '2'){
             //Registering a new user
             string name;
             int age;
@@ -133,13 +166,11 @@ int main(){
             cout << endl << "How many of these books will you borrow now? ";
             cin >> booksBorrowed;
 
-            //Dynamically creating an array of size booksToBorrow
-            string* borrowedBooks = new string[booksToBorrow];
             //As I know the number of books which they are borrowing, I could theoretically also store this in the Member object
             UserDataBase << name << "," << age << "," << loggedUserId << "," << loggedPassword;
-            for(int i=0;i<booksToBorrow<i++){
+            for(int i=0;i<booksToBorrow;i++){
                 //Handles the books which the user is immediately borrowing
-                if(i < borrowedBooks){
+                if(i < booksBorrowed){
                     //Ask them for the name of the book to borrow
                     cout << "Please enter the name of the book you are borrowing: ";
                     cin >> bookName;
@@ -159,9 +190,9 @@ int main(){
             UserDataBase << endl; //This should signify to the program that this is all of the data for this user
 
             //Resets getline() to start from the top
-            UserDataBase.seekg(0);
-            break;
-        case "3":
+            UserDataBase.close();
+        }
+        else if(choice == '3'){
             //Borrowing a book
             //Use s.find to find the first " " in the string
                 //This will indicate the first gap where the user can borrow another book
@@ -173,9 +204,10 @@ int main(){
 
             bool foundUser = false;
             int lineToReplace = 0;
-            string tempString = "";
+            string tempString;
+
             while(!foundUser){
-                getline(UserDataBase, tempString);
+                getline(ReadMemberInfo, tempString);
                 if(tempString.find(loggedUserId) != string::npos) break;
                 //It looks like if I want to update a line, I have to manually re-write the whole thing which is really annoying
                 lineToReplace++;
@@ -183,10 +215,9 @@ int main(){
             foundUser = true;
 
             //Resets getline() to start from the top
-            UserDataBase.seekg(0);
+            ReadMemberInfo.close();
 
             //Basically loop lineToReplace times, copying the old line into a string
-            ifstream ReadMemberInfo("memberships.txt");
             ofstream TempDataStore("tempFile.txt");
             int i=0;
             while(getline(ReadMemberInfo,tempString)){
@@ -200,12 +231,10 @@ int main(){
             //I can't be bothered to copy everything back into the original so I'll just delete the old file and rename the new one to cut corners
             remove("memberships.txt");
             rename("tempFile.txt","memberships.txt");
-            
-            break;
+        }
     }
     //The user is clearly finished with the program, so let's cleanly close all of the pipes
 
     UserDataBase.close();
-    exit();  
-    }
+    abort();  
 }
