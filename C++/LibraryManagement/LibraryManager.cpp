@@ -37,6 +37,7 @@ char menuInput(){
     cout << "Option: " << endl;
     //Taking the string input which represents the choice that the user has made
     while (input != '1' && input != '2' && input != '3' && input != '4') cin >> input;
+
     return input;
 }
 
@@ -104,7 +105,10 @@ Member findMember(string &memberID, string &password){
 }
 
 int main(){
-    ofstream UserDataBase("memberships.txt");
+    //Apparently, this overwrites the file if it already exists
+    ofstream UserDataBase;
+    //This second line is very important to prevent overwrites
+    UserDataBase.open("memberships.txt",ios::app);
     ifstream ReadMemberInfo("memberships.txt");
     
     bool loggedIn = false;
@@ -112,11 +116,16 @@ int main(){
     string loggedPassword;
     string bookName;
     string bookAuthor;
-    char choice = menuInput();
+    char choice = 'N'; //Placehodler value to get loop going
 
     while(choice != '4'){
-        if(!UserDataBase) ofstream UserDataBase("memberships.txt");
-        if(ReadMemberInfo) ifstream ReadMemberInfo("memberships.txt");
+        char choice = menuInput();
+
+        if(!UserDataBase){
+            UserDataBase.open("memberships.txt",ios::app);
+        }
+        if(!ReadMemberInfo) ifstream ReadMemberInfo("memberships.txt");
+        //Doesn't fully work yet - doesn't display the right user info - maybe debug this
         if(choice == '1'){
             //Logging in as a user
                 //Prompt them to enter a membershipID and a password
@@ -141,27 +150,28 @@ int main(){
             UserDataBase.close();
         }
         else if(choice == '2'){
-            //Registering a new user
+            //Registering a new user - works perfectly
             string name;
             int age;
             int booksToBorrow = 0;
             int booksBorrowed = 0;
             //Get the user's information here
                 //Bruh - cin only reads up to the first whitespace - why?!
-                //Why do I have to use getline to get the full string, man?
+        
             cout << "Please enter your name: ";
             getline(cin,name);
+            getline(cin,name);
 
-            cout << endl << "Please enter your age: ";
+            cout << "Please enter your age: ";
             cin >> age; 
 
-            cout << endl << "Please enter your 6-digit membership ID: ";
+            cout << "Please enter your 6-digit membership ID: ";
             cin >> loggedUserId;
 
-            cout << endl << "Please enter your password: ";
+            cout << "Please enter your password: ";
             cin >> loggedPassword;
 
-            cout << endl << "Please tell us how many books you want to borrow? ";
+            cout << "Please tell us how many books you want to borrow? ";
             cin >> booksToBorrow;
             //I might also want to ask how many books they want to initially borrow and leave empty spaces in the rest
                 //If I really cared, I would validate to make sure that this number is less than booksToBorrow
@@ -175,7 +185,10 @@ int main(){
                 if(i < booksBorrowed){
                     //Ask them for the name of the book to borrow
                     cout << "Please enter the name of the book you are borrowing: ";
+                    //Just to counteracct the extra /n left behind by using the cin
+                    if(i==0) getline(cin,bookName);
                     getline(cin,bookName);
+
                     cout << endl << "Please enter the author of this book: ";
                     getline(cin,bookAuthor);
                         //Could ask them first for the book name and user the \" to show the quotations around it
@@ -201,7 +214,9 @@ int main(){
 
             cout << "Please enter the name of the book you are borrowing: ";
             getline(cin,bookName);
-            cout << endl << "Please enter the author of this book: ";
+            getline(cin,bookName);
+
+            cout << "Please enter the author of this book: ";
             getline(cin,bookAuthor);
 
             bool foundUser = false;
@@ -217,7 +232,8 @@ int main(){
             foundUser = true;
 
             //Resets getline() to start from the top
-            ReadMemberInfo.close();
+            ReadMemberInfo.clear();
+            ReadMemberInfo.seekg(0);
 
             //Basically loop lineToReplace times, copying the old line into a string
             ofstream TempDataStore("tempFile.txt");
@@ -225,18 +241,26 @@ int main(){
             while(getline(ReadMemberInfo,tempString)){
                 //Should double check to make sure that I don't accidentally insert this inside a book name
                 if(i==lineToReplace){
-                    tempString.insert(tempString.find(", "), "\"" + bookName + "\" by " + bookAuthor);
+                    tempString.insert(tempString.find(", "), ",\"" + bookName + "\" by " + bookAuthor);
                 }
                 TempDataStore << tempString;
                 i++;
             }
-            //I can't be bothered to copy everything back into the original so I'll just delete the old file and rename the new one to cut corners
-            remove("memberships.txt");
-            rename("tempFile.txt","memberships.txt");
+            //This isn't successfully closing the thing
+            //Maybe I should close the pipe first?
+            UserDataBase.close();
+            ReadMemberInfo.close();
+            TempDataStore.close();
+
+            //Code doesn't seem to be removing the right file
+            if(remove("memberships.txt") != 0) cout << "I can't manage to delete this file";
+            int result = rename("tempFile.txt","memberships.txt");
+            if(result==0) cout << "Successful deletion" << endl;
+            else cout << "Error renaming file." << endl;
         }
     }
     //The user is clearly finished with the program, so let's cleanly close all of the pipes
 
-    UserDataBase.close();
+    if(UserDataBase) UserDataBase.close();
     abort();  
 }
