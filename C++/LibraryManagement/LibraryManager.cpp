@@ -54,44 +54,50 @@ Member findMember(string &memberID, string &password){
 
         //Should return the new Line storing all of the values of this string
         getline(reader, userInfo);
-        string newline = userInfo; //I could have done this using a start and endPos and setting the startPos to the previous endPos but I'll do that later 
-
-        auto pos = userInfo.find(del);
+        int startPos = 0;
+        size_t pos = 0;
         //This loop should fetch the string starting with the membershipID
         for(int i=0;i<2;i++){
-            userInfo.erase(0, pos+del.length());
-            pos = userInfo.find(del); 
+            pos = userInfo.find(del, startPos);
+            startPos = pos+1;
         }
 
         //Now, we should compare if this membershipID is equal to the one inputted by the user
-        if(memberID == userInfo.substr(0,pos)){
-            //We get the password which should be after the membershipID stored in the file
-            userInfo.erase(0, pos+del.length());
-            pos = userInfo.find(del);
+        pos = userInfo.find(del, startPos);
 
-            if(password == userInfo.substr(0,pos)){
+        if(memberID == userInfo.substr(startPos,pos-startPos)){
+            //We get the password which should be after the membershipID stored in the file
+            
+            pos = userInfo.find(del, startPos);
+            startPos = pos+1;
+            pos = userInfo.find(del, startPos);
+
+            if(password == userInfo.substr(startPos,pos-startPos)){
                 //Cool, this is our member
                 //Now, let's get all of their data from this string and store it in a Member object
 
                 string basicValues[3]; //I will store the name, age and membershipID in this
-                pos = newline.find(del);
+                startPos = 0;
+                auto pos = 0;
+
                 for(int i=0;i<3;i++){
-                    basicValues[i] = newline.substr(0,pos);
-                    newline.erase(0, pos+del.length());
-                    pos = newline.find(del); 
+                    pos = userInfo.find(del, startPos);
+                    basicValues[i] = userInfo.substr(startPos,pos-startPos);
+                    cout << basicValues[i] << endl;
+                    startPos = pos+1;
                 }
 
                 //This is the password which we aren't storing
-                newline.erase(0, pos+del.length());
-                pos = newline.find(del);
+                pos = userInfo.find(del, startPos+1);
+                startPos = pos+1;
 
                 //From this point onwards, we should just be fetching the borrowed books of this user
                 vector<string> borrowedBooks; 
 
                 while(pos != string::npos){
-                    borrowedBooks.push_back(newline.substr(0,pos));
-                    newline.erase(0, pos+del.length());
-                    pos = newline.find(del);
+                    pos = userInfo.find(del, startPos+1);
+                    borrowedBooks.push_back(userInfo.substr(startPos,pos-startPos));
+                    startPos = pos+1;
                 }
 
                 //stoi converts strings to integers
@@ -115,7 +121,6 @@ int main(){
     UserDataBase.open("memberships.txt",ios::app);
     ifstream ReadMemberInfo("memberships.txt");
     
-    bool loggedIn = false;
     string loggedUserId;
     string loggedPassword;
     string bookName;
@@ -134,7 +139,7 @@ int main(){
                 //Prompt them to enter a membershipID and a password
             cout << "Please enter your membershipID: ";
             cin >> loggedUserId;
-            cout << endl << "Please enter your password: ";
+            cout << "Please enter your password: ";
             cin >> loggedPassword;
             //Make sure that we find a match in the .txt file
                 //Could maybe return an empty Member object if we fail to find this user
@@ -146,14 +151,14 @@ int main(){
                 cout << returningUser << endl;
             }
             else{
-                cout << "User is not found in our system. I'd recommend that you create a new account." << endl;
+                cout << endl << "User is not found in our system. I'd recommend that you create a new account." << endl << endl;
             }
 
             //Resets getline() to start from the top
             UserDataBase.close();
         }
         else if(choice == '2'){
-            //Registering a new user - works perfectly
+            //Registering a new user
             string name;
             int age;
             int booksToBorrow = 0;
@@ -182,7 +187,7 @@ int main(){
             cin >> booksBorrowed;
 
             //As I know the number of books which they are borrowing, I could theoretically also store this in the Member object
-            UserDataBase << name << "," << age << "," << loggedUserId << "," << loggedPassword;
+            UserDataBase << endl << name << "," << age << "," << loggedUserId << "," << loggedPassword;
             for(int i=0;i<booksToBorrow;i++){
                 //Handles the books which the user is immediately borrowing
                 if(i < booksBorrowed){
@@ -199,10 +204,6 @@ int main(){
                     //Replace this space placeholder with that name of the book
                     UserDataBase << "," << "\"" << bookName << "\"" << " by " << bookAuthor;
                 }
-                else{
-                    //Handles the books which they are able to borrow in the future
-                    UserDataBase << ", ";
-                }
                  
             }
             UserDataBase << endl; //This should signify to the program that this is all of the data for this user
@@ -212,54 +213,71 @@ int main(){
         }
         else if(choice == '3'){
             //Borrowing a book
-            //Use s.find to find the first " " in the string
+
+            //Don't forget to prompt the user to log out if they are logged into someone else's account
+            cout << endl << "If this isn't your membership ID, you might want to restart the program and login to borrow a book for yourself." << endl;
+            cout << "Current user: " << loggedUserId << endl;
+            char isThisYou = 'G';
+            while(isThisYou != 'Y' && isThisYou != 'N'){
+                cout << "Is this your account? Press \'Y\' for yes and \'N\' for no:";
+                cin >> isThisYou;
+                isThisYou = toupper(isThisYou);
+            }
+            //clearly the right user must be logged in now, otherwise, they are sent back to the main menu to login properly now
+            if(isThisYou == 'Y'){
+                //Use s.find to find the first " " in the string
                 //This will indicate the first gap where the user can borrow another book
 
-            cout << "Please enter the name of the book you are borrowing: ";
-            getline(cin,bookName);
-            getline(cin,bookName);
+                cout << "Please enter the name of the book you are borrowing: ";
+                getline(cin,bookName);
+                getline(cin,bookName);
 
-            cout << "Please enter the author of this book: ";
-            getline(cin,bookAuthor);
+                cout << "Please enter the author of this book: ";
+                getline(cin,bookAuthor);
 
-            bool foundUser = false;
-            int lineToReplace = 0;
-            string tempString;
+                bool foundUser = false;
+                int lineToReplace = 0;
+                string tempString;
 
-            while(!foundUser){
-                getline(ReadMemberInfo, tempString);
-                if(tempString.find(loggedUserId) != string::npos) break;
-                //It looks like if I want to update a line, I have to manually re-write the whole thing which is really annoying
-                lineToReplace++;
-            }
-            foundUser = true;
-
-            //Resets getline() to start from the top
-            ReadMemberInfo.clear();
-            ReadMemberInfo.seekg(0);
-
-            //Basically loop lineToReplace times, copying the old line into a string
-            ofstream TempDataStore("tempFile.txt");
-            int i=0;
-            while(getline(ReadMemberInfo,tempString)){
-                //Should double check to make sure that I don't accidentally insert this inside a book name
-                if(i==lineToReplace){
-                    tempString.insert(tempString.find(", "), ",\"" + bookName + "\" by " + bookAuthor);
+                while(!foundUser){
+                    getline(ReadMemberInfo, tempString);
+                    if(tempString.find(loggedUserId) != string::npos) break;
+                    //It looks like if I want to update a line, I have to manually re-write the whole thing which is really annoying
+                    lineToReplace++;
                 }
-                TempDataStore << tempString;
-                i++;
-            }
-            //This isn't successfully closing the thing
-            //Maybe I should close the pipe first?
-            UserDataBase.close();
-            ReadMemberInfo.close();
-            TempDataStore.close();
+                foundUser = true;
 
-            //Code doesn't seem to be removing the right file
-            if(remove("memberships.txt") != 0) cout << "I can't manage to delete this file";
-            int result = rename("tempFile.txt","memberships.txt");
-            if(result==0) cout << "Successful deletion" << endl;
-            else cout << "Error renaming file." << endl;
+                //Resets getline() to start from the top
+                ReadMemberInfo.clear();
+                ReadMemberInfo.seekg(0);
+
+                //Basically loop lineToReplace times, copying the old line into a string
+                ofstream TempDataStore("tempFile.txt");
+                int i=0;
+                while(getline(ReadMemberInfo,tempString)){
+                    //Should double check to make sure that I don't accidentally insert this inside a book name
+                    if(i==lineToReplace){
+                        tempString.insert(tempString.find(", "), ",\"" + bookName + "\" by " + bookAuthor);
+                    }
+                    TempDataStore << tempString;
+                    i++;
+                }
+                //This isn't successfully closing the thing
+                //Maybe I should close the pipe first?
+                UserDataBase.close();
+                ReadMemberInfo.close();
+                TempDataStore.close();
+
+                //Code doesn't seem to be removing the right file
+                if(remove("memberships.txt") != 0) cout << "I can't manage to delete this file";
+                int result = rename("tempFile.txt","memberships.txt");
+                if(result==0) cout << "Successful deletion" << endl;
+                else cout << "Error renaming file." << endl;
+            }
+            else{
+                cout << endl << "You are now being sent back to the main menu to log into the right account" << endl;
+            }
+
         }
     }
     //The user is clearly finished with the program, so let's cleanly close all of the pipes
