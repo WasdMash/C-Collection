@@ -8,10 +8,11 @@
 using namespace std;
 
 Member::Member(string name, int age, string membershipID, vector<string> borrowedBooks){
-    name = name;
-    age = age;
-    membershipID = membershipID;
-    borrowedBooks = borrowedBooks;
+    //Don't forget the 'this' keyword, otherwise the compiler will fail to tell where to assign the values
+    this->name = name;
+    this->age = age;
+    this->membershipID = membershipID;
+    this->borrowedBooks = borrowedBooks;
 }
 
 ostream& operator<<(ostream &os, const Member &other)
@@ -43,17 +44,18 @@ char menuInput(){
 
 Member findMember(string &memberID, string &password){
     ifstream reader("memberships.txt");
+    reader.clear();
 
-    //Should return the new Line storing all of the values of this string
-    string newline;
-    getline(reader, newline);
-    if(!reader.eof()){
+    while(!reader.eof()){
         //Split the string into an array of strings, separating each string with commas like a CSV file
         string del = ",";
-        string userInfo = newline;
+        string userInfo;
         string thisPassword;
 
-        //Apparently, I can't use getline on a stringstream so I'll need another way to split a string using ,
+        //Should return the new Line storing all of the values of this string
+        getline(reader, userInfo);
+        string newline = userInfo; //I could have done this using a start and endPos and setting the startPos to the previous endPos but I'll do that later 
+
         auto pos = userInfo.find(del);
         //This loop should fetch the string starting with the membershipID
         for(int i=0;i<2;i++){
@@ -72,6 +74,7 @@ Member findMember(string &memberID, string &password){
                 //Now, let's get all of their data from this string and store it in a Member object
 
                 string basicValues[3]; //I will store the name, age and membershipID in this
+                pos = newline.find(del);
                 for(int i=0;i<3;i++){
                     basicValues[i] = newline.substr(0,pos);
                     newline.erase(0, pos+del.length());
@@ -94,6 +97,7 @@ Member findMember(string &memberID, string &password){
                 //stoi converts strings to integers
                 //OStream requires a static object, not a dynamically ccreated one
                 Member foundMember(basicValues[0], stoi(basicValues[1]), basicValues[2], borrowedBooks);
+
                 return foundMember;
             }
         }
@@ -116,7 +120,7 @@ int main(){
     string loggedPassword;
     string bookName;
     string bookAuthor;
-    char choice = 'N'; //Placehodler value to get loop going
+    char choice = 'N'; //Placeholder value to get loop going
 
     while(choice != '4'){
         char choice = menuInput();
@@ -125,7 +129,6 @@ int main(){
             UserDataBase.open("memberships.txt",ios::app);
         }
         if(!ReadMemberInfo) ifstream ReadMemberInfo("memberships.txt");
-        //Doesn't fully work yet - doesn't display the right user info - maybe debug this
         if(choice == '1'){
             //Logging in as a user
                 //Prompt them to enter a membershipID and a password
@@ -140,7 +143,7 @@ int main(){
                 //Print a "Welcome message first"
                 cout << "Welcome " << returningUser.getName() << "!" << endl;
                 //Then print out the object
-                cout << returningUser;
+                cout << returningUser << endl;
             }
             else{
                 cout << "User is not found in our system. I'd recommend that you create a new account." << endl;
