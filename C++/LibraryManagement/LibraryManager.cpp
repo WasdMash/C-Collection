@@ -184,7 +184,13 @@ int main(){
             cin >> *booksToBorrow;
 
             //As I know the number of books which they are borrowing, I could theoretically also store this in the Member object
-            if(is_empty(UserDataBase)) UserDataBase << endl;
+
+            //Quick check if the file is empty
+            ReadMemberInfo.seekg(0, ios::end);
+            if(ReadMemberInfo.tellg() == 0) UserDataBase << endl;
+            ReadMemberInfo.clear();
+            ReadMemberInfo.close();
+
             UserDataBase << *name << "," << *age << "," << *loggedUserId << "," << *loggedPassword;
             for(int i=0;i<*booksToBorrow;i++){
             //Handles the books which the user is immediately borrowing
@@ -235,43 +241,28 @@ int main(){
 
                 cout << "Please enter the author of this book: ";
                 getline(cin,*bookAuthor);
-
+ 
                 int *lineToReplace = new int(0);
                 string *tempString = new string;
+                ofstream TempDataStore("tempFile.txt");
 
                 //This loop will loop through the file until we find the user whose details we are updating
+                ReadMemberInfo.close();
+                ReadMemberInfo.open("memberships.txt",ifstream::in);
 
                 while(getline(ReadMemberInfo, *tempString)){
-                    if(tempString->find(*loggedUserId) != string::npos) break;
-                    //It looks like if I want to update a line, I have to manually re-write the whole thing which is really annoying
-                    (*lineToReplace)++;
-                }
-
-                //Resets getline() to start from the top
-                ReadMemberInfo.clear();
-                ReadMemberInfo.seekg(0);
-
-                //Basically loop lineToReplace times, copying the old line into a string
-                ofstream TempDataStore("tempFile.txt");
-                int *i=new int(0);
-                cout << "Line to replace: " << *lineToReplace << endl;
-
-                //Resets getline() to start from the top
-                ReadMemberInfo.clear();
-                ReadMemberInfo.seekg(0);
-
-                while(getline(ReadMemberInfo,*tempString)){
                     //Should double check to make sure that I don't accidentally insert this inside a book name
-                    cout << *i << endl;
-                    cout << *tempString << endl;
 
-                    if(*i==*lineToReplace){
+                    //If this is the line for this member - we found them
+                    if(tempString->find(*loggedUserId) != string::npos){
                         *tempString = (*tempString) + ",\"" + *bookName + "\" by " + *bookAuthor;
                     }
                     TempDataStore << *tempString;
                     if(!ReadMemberInfo.eof()) TempDataStore << endl;
-                    (*i)++;
+                    //It looks like if I want to update a line, I have to manually re-write the whole thing which is really annoying
+                    (*lineToReplace)++;
                 }
+
                 //This isn't successfully closing the thing
                 //Maybe I should close the pipe first?
                 UserDataBase.close();
@@ -282,7 +273,7 @@ int main(){
                 rename("tempFile.txt","memberships.txt");
 
                 //Garbage collection time
-                delete i; delete tempString;
+                delete tempString;
                 delete lineToReplace; delete isThisYou;
 
             }
