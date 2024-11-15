@@ -30,6 +30,23 @@ ostream& operator<<(ostream &os, const Member &other)
     return os;
 }
 
+string encrypt(string msg, string key)
+{
+    // Make sure the key is at least as long as the message
+    string tmp(key);
+    while (key.size() < msg.size())
+        key += tmp;
+    
+    // And now for the encryption part
+    for (string::size_type i = 0; i < msg.size(); ++i)
+        msg[i] ^= key[i];
+    return msg;
+}
+string decrypt(string msg, string key)
+{
+    return encrypt(msg, key); // lol
+}
+
 char menuInput(){
     char input;
     cout << "Please select a number for the option of: " << endl;
@@ -138,13 +155,17 @@ int main(){
         if(*choice == '1'){
             //Logging in as a user
                 //Prompt them to enter a membershipID and a password
+
+            //Should use a while loop to keep asking them to enter a valid format
+                //Starts with a 'M' and is followed by 6 digits    
             cout << "Please enter your membershipID: ";
             cin >> *loggedUserId;
+            //Should probably encrypt and decrypt this password so that it isn't visible
             cout << "Please enter your password: ";
             cin >> *loggedPassword;
             //Make sure that we find a match in the .txt file
                 //Could maybe return an empty Member object if we fail to find this user
-            Member returningUser = findMember(*loggedUserId, *loggedPassword);
+            Member returningUser = findMember(*loggedUserId, encrypt(*loggedPassword, *loggedUserId));
             if(returningUser.getName() != "ERROR"){
                 //Print a "Welcome message first"
                 cout << "Welcome " << returningUser.getName() << "!" << endl;
@@ -191,7 +212,7 @@ int main(){
             ReadMemberInfo.clear();
             ReadMemberInfo.close();
 
-            UserDataBase << *name << "," << *age << "," << *loggedUserId << "," << *loggedPassword;
+            UserDataBase << *name << "," << *age << "," << *loggedUserId << "," << encrypt(*loggedPassword, *loggedUserId);
             for(int i=0;i<*booksToBorrow;i++){
             //Handles the books which the user is immediately borrowing
                 //Ask them for the name of the book to borrow

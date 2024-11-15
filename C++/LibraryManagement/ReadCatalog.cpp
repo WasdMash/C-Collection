@@ -1,7 +1,3 @@
-// Replace the comments with your own, except you can use the comment about one-word lookahead.
-
-// You may modify this code that I have supplied if you wish.
-
 #include "ReadCatalog.h"
 #include <cctype>
 #include <cstdlib>
@@ -13,14 +9,13 @@ using namespace std;
 // Helper function to extract the author's name from a line
 string extractAuthor(string line)
 {
-    // Should return the author's name extracted from the line.
     // The line is expected to be in the format "Book Title by Author Name".
-    // You need to write this.
     string delimiter = " by ";
     //This should, in theory, get the string by starting from the by until the end of the line
     string authorName = line.substr(s.find(delimiter), line.length-1);
-
-    return authorName; // Placeholder return
+    //The graph uses the surname, which is separated by a single space
+    string authorSurname = authorName.substr(s.find(" "), authorName.length-1)
+    return authorName;
 }
 
 ReadCatalog::ReadCatalog(const char *fname)
@@ -37,31 +32,33 @@ ReadCatalog::ReadCatalog(const char *fname)
     eofFound = false;
 }
 
+string removePunct(string &author){
+    string newAuthString = "";
+    int check = 0;
+    for(int i=0;i<author.length();i++){
+        //Checks if each character in the author name is a letter
+        check = isalpha(author[i]);
+        //If so, then the letter is converted to lowercase
+        if(check) newAuthString += to_lower(author[i]);
+    }
+    //Returns an empty string if there are no letters
+    return newAuthString;
+}
+
 string ReadCatalog::getNextAuthor()
 {
-    // Should return the next author in the file, converted to lower case.
-    // An empty string should be returned if the next author contains no letters.
 
     // Uses a one-word lookahead to avoid any problems relating to when end-of-file
     // is detected due to absence/presence of newline at end of file.
 
-    // Incomplete.
 
     string line = nextLine;
     getline(catalogFile, nextLine);
 
-    if (catalogFile.eof())
-        eofFound = true;
+    if (catalogFile.eof()) eofFound = true;
 
-    // Extract the author's name from the line.
     string author = extractAuthor(line);
-
-    author = removePunct(author); // This is optional
-
-    // Need to check that author contains a letter, and if not return an empty string.
-        //Maybe loop through the string, checking isalpha() for every letter and converting it into lower-case if it is
-    // Also need to convert to lower case before returning.
-
+    author = removePunct(author);
     return author;
 }
 
@@ -72,6 +69,26 @@ bool ReadCatalog::isNextAuthor()
 
 void ReadCatalog::close()
 {
-    // Close the catalog file.
-    // You must write this.
+    catalogFile.close();
+}
+
+int main(){
+    string authorsToFind[5];
+    int authorOccurrences[5] = {0};
+    for(int i=0;i<5;i++){
+        cout << endl << "Please enter your author #" << i << "'s name: ";
+        cin >> authorsToFind[i];
+    }
+
+    ReadCatalog catalogue("book_catalog.txt");
+    //Go search through the whole file and find the occurrences of each author name
+        //Perhaps store them in an array of equal length and indices
+
+    //I should overload the << to show the data as shown on the PDF
+        //cout << catalogue << endl;
+    //Use the formula:
+        /*
+        Bar chart ratio = (numAuthorOccurrences[i] / allAuthorsOccurrencces) * max=sToDraw
+        //Could also replace the max=sToDraw with *100 to show the percentages to each one
+         */
 }
