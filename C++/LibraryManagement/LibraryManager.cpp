@@ -20,10 +20,11 @@ ostream& operator<<(ostream &os, const Member &other)
     os << "Your age is " << other.age << endl
     << "Your membership ID is " << other.membershipID << "." << endl << "Your borrowed books are: " << endl;
 
+    //Don't forget that I'm supposed to show the three most recently borrowed books
     if(other.borrowedBooks.size() != 0){
-        for(int i=0;i<other.borrowedBooks.size();i++){
+        for(int i=0;i<3;i++){
             //Could come back to this later to manually add the quotation marks to the book titles
-            os << " - " << other.borrowedBooks[i] << endl;
+            os << " - " << other.borrowedBooks[other.borrowedBooks.size()-(i+1)] << endl;
         }
     }
 
@@ -155,11 +156,10 @@ int main(){
         if(*choice == '1'){
             //Logging in as a user
                 //Prompt them to enter a membershipID and a password
-
-            //Should use a while loop to keep asking them to enter a valid format
-                //Starts with a 'M' and is followed by 6 digits    
             cout << "Please enter your membershipID: ";
             cin >> *loggedUserId;
+           
+            
             //Should probably encrypt and decrypt this password so that it isn't visible
             cout << "Please enter your password: ";
             cin >> *loggedPassword;
@@ -195,9 +195,11 @@ int main(){
             cout << "Please enter your age: ";
             cin >> *age; 
 
-            cout << "Please enter your 6-digit membership ID: ";
-            cin >> *loggedUserId;
-
+            //Making sure that when we create a new ID, it's in a specified form
+            while(*loggedUserId->compare(0,1,"M") != 0 && *loggedUserId->length() != 7){
+                cout << "Please enter your 6-digit membership ID: ";
+                cin >> *loggedUserId;
+            }
             cout << "Please enter your password: ";
             cin >> *loggedPassword;
 
