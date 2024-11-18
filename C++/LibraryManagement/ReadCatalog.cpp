@@ -12,10 +12,9 @@ string ReadCatalog::extractAuthor(string line)
     // The line is expected to be in the format "Book Title by Author Name".
     string delimiter = " by ";
     //This should, in theory, get the string by starting from the by until the end of the line
-    string authorName = line.substr(line.find(delimiter), line.length()-1);
+    string authorName = line.substr(line.rfind(delimiter)+delimiter.length(), line.length()-1);
     //The graph uses the surname, which is separated by a single space
-    cout << "author name: " << authorName << endl;
-    string authorSurname = authorName.substr(line.find(" "), authorName.length()-1);
+    string authorSurname = authorName.substr(authorName.find(" ")+1, authorName.length()-1);
     return authorSurname;
 }
 
@@ -79,25 +78,29 @@ int main(){
     for(int i=0;i<5;i++){
         cout << "Please enter your author #" << i+1 << "'s name: ";
         getline(cin, authorsToFind[i]);
-        for(int j=0;j<authorsToFind[i].length();j++){
-            authorsToFind[i][j] = tolower(authorsToFind[i][j]);
-        }
     }
 
     ReadCatalog catalogue("book_catalog.txt");
     //Go search through the whole file and find the occurrences of each author name
         //Perhaps store them in an array of equal length and indices
     string lineAuthor;
+    //Stops at the second-to-last line
     while(catalogue.isNextAuthor()){
         //Gets the next author in the file
         lineAuthor = catalogue.getNextAuthor();
+        cout << "The current line author is: " << lineAuthor << endl;
         //Searches to find which author it is and logs relevant information
         for(int i=0;i<5;i++){
-            if(lineAuthor == authorsToFind[i]){
+            cout << "\tWe are comparing this author with " << removePunct(authorsToFind[i]) << endl;
+            if(lineAuthor == removePunct(authorsToFind[i])){
                 //We've found yet another, so log this
                 authorOccurrences[i]++;
             }
         }
+    }
+
+    for(int i=0;i<5;i++){
+        cout << "The number of occurrences of " << authorsToFind[i] << " are " << authorOccurrences[i] << endl;
     }
 
     //I should overload the << to show the data as shown on the PDF
