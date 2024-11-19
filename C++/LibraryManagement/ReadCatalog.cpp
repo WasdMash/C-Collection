@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <fstream>
 
@@ -18,8 +19,6 @@ string ReadCatalog::extractAuthor(string line)
     //The graph uses the surname, which is separated by a single space
     //Annoyingly, some of these books have multiple authors which I should take into consideration
     string authorSurname = authorName.substr(authorName.rfind(" ")+1, authorName.length()-1);
-    cout << "Author surname: " << authorSurname << endl;
-    
     return authorSurname;
 }
 
@@ -39,10 +38,12 @@ ReadCatalog::ReadCatalog(const char *fname)
 
 //This is the function which should automatically create the output of the program
     //It should be both printed to the console and to a text file
-ostream& operator<<(ostream &os, const ReadCatalog& other){
-    //
-    return os;
-}
+    /*
+    ostream& operator<<(ostream &os, const ReadCatalog& other){
+        return os;
+    }
+     */
+
 
 string removePunct(string &author){
     string newAuthString = "";
@@ -101,21 +102,22 @@ int main(){
 
     //Don't forget to check if they have the .txt on the end
         //If so, I'll add it myself
-    if(authorFileName.substr(authorFileName.length() - 5, 4) != ".txt"){
+
+    if(authorFileName.substr(authorFileName.length() - 4, 4) != ".txt"){
         authorFileName += ".txt";
     }
-    if(catalogueFileName.substr(catalogueFileName.length() - 5, 4) != ".txt"){
+    if(catalogueFileName.substr(catalogueFileName.length() - 4, 4) != ".txt"){
         catalogueFileName += ".txt";
     }
-    if(outputFileName.substr(outputFileName.length() - 5, 4) != ".txt"){
+    if(outputFileName.substr(outputFileName.length() - 4, 4) != ".txt"){
         outputFileName += ".txt";
     }
 
     //Now, try using these file names to open their respective files
-    ofstream authorReader(authorFileName);
-    ReadCatalog catalogue(catalogueFileName);
-    ifstream outputWriter(outputFileName);
-    if(!authorReader || !catalogue.catalogFile || !outputWriter){
+    ifstream authorReader(authorFileName);
+    ReadCatalog catalogue(catalogueFileName.c_str());
+    ofstream outputWriter(outputFileName);
+    if(!authorReader || !outputWriter){
         //Then, clearly neither of these files exist and the code should terminate cleanly
         abort();
     }
@@ -124,11 +126,11 @@ int main(){
     string authorsToFind[5];
     int authorOccurrences[5] = {0};
     for(int i=0;i<5;i++){
-        cout << "Please enter your author #" << i+1 << "'s name: ";
-        authorFileName >> authorsToFind[i];
+        getline(authorReader, authorsToFind[i]);
     }
     //Prints out the searched authors line in the PDF
-    cout << "Searched authors: " << authorsToFind[1];
+        //Don't forget to have this saved to the output file also
+    cout << "Searched authors: " << authorsToFind[0];
     for(int i=1;i<5;i++){
         cout << ", " << authorsToFind[i];
     }
@@ -167,17 +169,17 @@ int main(){
     int barsToDraw;
     for(int i=0;i<5;i++){
         //This will dictate how many bars are drawn for each author in the bar chart
-        barsToDraw = (authorOccurrences[i] / maxAuthorOccurrences) * maxBarChartSigns;
+        barsToDraw = (authorOccurrences[i] * maxBarChartSigns / maxAuthorOccurrences);
         authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
 
         //This code writes it to the console
         //The string(barsToDraw, "=") tells the code to create of length barsToDraw made of just the = symbol
-        cout << setw(20) << authorToCompare << string(barsToDraw, "=") << " ";
-        cout << authorOccurrences << " (" << (authorOccurrences[i] / maxAuthorOccurrences)*100 << "%)" << endl;
+        cout << setw(15) << left << authorToCompare << string(barsToDraw, '=') << " ";
+        cout << authorOccurrences[i] << " (" << (authorOccurrences[i]*100 / maxAuthorOccurrences) << "%)" << endl;
 
         //This code writes it to the text file
-        outputWriter << setw(20) << authorToCompare << string(barsToDraw, "=") << " ";
-        outputWriter << authorOccurrences << " (" << (authorOccurrences[i] / maxAuthorOccurrences)*100 << "%)" << endl;
+        outputWriter << setw(15) << left << authorToCompare << string(barsToDraw, '=') << " ";
+        outputWriter << to_string(authorOccurrences[i]) << " (" << to_string((authorOccurrences[i]*100 / maxAuthorOccurrences)) << "%)" << endl;
     }
 
     outputWriter.close();

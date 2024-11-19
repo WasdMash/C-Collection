@@ -49,6 +49,8 @@ class ReadCatalog
      */
      bool isNextAuthor();
 
+     //returns the catalo
+
   private:
      ifstream catalogFile;
      string nextLine;
