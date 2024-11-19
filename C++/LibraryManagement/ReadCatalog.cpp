@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ string ReadCatalog::extractAuthor(string line)
     // The line is expected to be in the format "Book Title by Author Name".
     string delimiter = " by ";
     //This should, in theory, get the string by starting from the by until the end of the line
-    string authorName = line.substr(line.find(delimiter)+delimiter.length(), line.length()-1);
+    string authorName = line.substr(line.rfind(delimiter)+delimiter.length(), line.length()-1);
     //The graph uses the surname, which is separated by a single space
     //Annoyingly, some of these books have multiple authors which I should take into consideration
     string authorSurname = authorName.substr(authorName.rfind(" ")+1, authorName.length()-1);
@@ -34,6 +35,13 @@ ReadCatalog::ReadCatalog(const char *fname)
     // Read the first line for lookahead.
     getline(catalogFile, nextLine);
     eofFound = false;
+}
+
+//This is the function which should automatically create the output of the program
+    //It should be both printed to the console and to a text file
+ostream& operator<<(ostream &os, const ReadCatalog& other){
+    //
+    return os;
 }
 
 string removePunct(string &author){
@@ -77,38 +85,102 @@ void ReadCatalog::close()
 }
 
 int main(){
+    
+    //Don't forget that the user should ask for the name of the file containing the search authors
+    string authorFileName;
+    cout << "Please enter the name of the file containing the search authors: ";
+    getline(cin, authorFileName); //Don't forget to add the .txt if they forget to add it
+    //The user should ask for the name of the catalogue file to be analysed
+    string catalogueFileName; //By default, should be "book_catalog.txt"
+    cout << "Please enter the name of the catalogue file:";
+    getline(cin, catalogueFileName);
+    //The user should ask for the name of the output file
+    string outputFileName;
+    cout << "Please enter the name of the output file: ";
+    getline(cin, outputFileName);
+
+    //Don't forget to check if they have the .txt on the end
+        //If so, I'll add it myself
+    if(authorFileName.substr(authorFileName.length() - 5, 4) != ".txt"){
+        authorFileName += ".txt";
+    }
+    if(catalogueFileName.substr(catalogueFileName.length() - 5, 4) != ".txt"){
+        catalogueFileName += ".txt";
+    }
+    if(outputFileName.substr(outputFileName.length() - 5, 4) != ".txt"){
+        outputFileName += ".txt";
+    }
+
+    //Now, try using these file names to open their respective files
+    ofstream authorReader(authorFileName);
+    ReadCatalog catalogue(catalogueFileName);
+    ifstream outputWriter(outputFileName);
+    if(!authorReader || !catalogue.catalogFile || !outputWriter){
+        //Then, clearly neither of these files exist and the code should terminate cleanly
+        abort();
+    }
+    //Go search through the whole file and find the occurrences of each author name
+    
     string authorsToFind[5];
     int authorOccurrences[5] = {0};
     for(int i=0;i<5;i++){
         cout << "Please enter your author #" << i+1 << "'s name: ";
-        getline(cin, authorsToFind[i]);
-        for(int j=0;j<authorsToFind[i].length();j++){
-            authorsToFind[i][j] = tolower(authorsToFind[i][j]);
-        }
+        authorFileName >> authorsToFind[i];
     }
+    //Prints out the searched authors line in the PDF
+    cout << "Searched authors: " << authorsToFind[1];
+    for(int i=1;i<5;i++){
+        cout << ", " << authorsToFind[i];
+    }
+    cout << endl;
 
-    ReadCatalog catalogue("book_catalog.txt");
-    //Go search through the whole file and find the occurrences of each author name
-        //Perhaps store them in an array of equal length and indices
     string lineAuthor;
+    string authorToCompare;
+    int maxAuthorOccurrences = 0;
+    //Max length of the bar 
+    int maxBarChartSigns = 10;
+
+    //Stops at the second-to-last line
     while(catalogue.isNextAuthor()){
         //Gets the next author in the file
         lineAuthor = catalogue.getNextAuthor();
         //Searches to find which author it is and logs relevant information
         for(int i=0;i<5;i++){
-            if(lineAuthor == authorsToFind[i]){
+            authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
+            if(lineAuthor == removePunct(authorToCompare)){
                 //We've found yet another, so log this
                 authorOccurrences[i]++;
             }
         }
     }
 
-    cout << "Searched authors"
-    //I should overload the << to show the data as shown on the PDF
-        //cout << setw(some_random_num) << catalogue << endl;
-    //Use the formula:
-        /*
-        Bar chart ratio = (numAuthorOccurrences[i] / allAuthorsOccurrencces) * max=sToDraw
-        //Could also replace the max=sToDraw with *100 to show the percentages to each one
-         */
+    //Start dealing with printing out the bar chart;
+    cout << "Author Occurrence:" << endl;
+    //Calculating the total number of authors in the catalogue file
+    for(int i=0;i<5;i++){
+        maxAuthorOccurrences += authorOccurrences[i];
+    }
+    
+    //Creating the actual bar chart now
+        //Now figure out how to write this to a text file
+        //Maybe store the values in a string and then write this line to the console and the output file
+    int barsToDraw;
+    for(int i=0;i<5;i++){
+        //This will dictate how many bars are drawn for each author in the bar chart
+        barsToDraw = (authorOccurrences[i] / maxAuthorOccurrences) * maxBarChartSigns;
+        authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
+
+        //This code writes it to the console
+        //The string(barsToDraw, "=") tells the code to create of length barsToDraw made of just the = symbol
+        cout << setw(20) << authorToCompare << string(barsToDraw, "=") << " ";
+        cout << authorOccurrences << " (" << (authorOccurrences[i] / maxAuthorOccurrences)*100 << "%)" << endl;
+
+        //This code writes it to the text file
+        outputWriter << setw(20) << authorToCompare << string(barsToDraw, "=") << " ";
+        outputWriter << authorOccurrences << " (" << (authorOccurrences[i] / maxAuthorOccurrences)*100 << "%)" << endl;
+    }
+
+    outputWriter.close();
+    authorReader.close();
+    catalogue.close();
 }

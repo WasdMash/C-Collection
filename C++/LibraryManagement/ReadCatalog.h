@@ -60,6 +60,7 @@ class ReadCatalog
       * @return - string - the extracted author name.
       */
      string extractAuthor(string line);
+
 };
 
 #endif
