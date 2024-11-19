@@ -7,15 +7,18 @@
 using namespace std;
 
 // Helper function to extract the author's name from a line
+    //If I really cared about multiple authors, I could create and return an array/vector of strings
 string ReadCatalog::extractAuthor(string line)
 {
     // The line is expected to be in the format "Book Title by Author Name".
     string delimiter = " by ";
     //This should, in theory, get the string by starting from the by until the end of the line
-    string authorName = line.substr(line.find(delimiter), line.length()-1);
+    string authorName = line.substr(line.find(delimiter)+delimiter.length(), line.length()-1);
     //The graph uses the surname, which is separated by a single space
-    cout << "author name: " << authorName << endl;
-    string authorSurname = authorName.substr(line.find(" "), authorName.length()-1);
+    //Annoyingly, some of these books have multiple authors which I should take into consideration
+    string authorSurname = authorName.substr(authorName.rfind(" ")+1, authorName.length()-1);
+    cout << "Author surname: " << authorSurname << endl;
+    
     return authorSurname;
 }
 
@@ -100,6 +103,7 @@ int main(){
         }
     }
 
+    cout << "Searched authors"
     //I should overload the << to show the data as shown on the PDF
         //cout << setw(some_random_num) << catalogue << endl;
     //Use the formula:
