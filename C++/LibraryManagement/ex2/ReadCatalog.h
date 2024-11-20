@@ -63,6 +63,10 @@ class ReadCatalog
       */
      string extractAuthor(string line);
 
+     void createOutput(); //might need a const rightafter to prevent issues with const &ReadCatalog in << overload
+
+     friend ostream& operator<< (ostream &os, const ReadCatalog &other);
+
 };
 
 #endif

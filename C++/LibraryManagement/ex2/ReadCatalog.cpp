@@ -41,6 +41,7 @@ ReadCatalog::ReadCatalog(const char *fname)
 
 /*
 ostream& operator<<(ostream &os, const ReadCatalog& other){
+    other.createOutput();
     return os;
 }
 */
@@ -176,7 +177,7 @@ int main(){
     int barsToDraw;
     for(int i=0;i<5;i++){
         //This will dictate how many bars are drawn for each author in the bar chart
-        barsToDraw = authorOccurrences[i] % maxBarChartSigns ;
+        barsToDraw = max(authorOccurrences[i], maxBarChartSigns) ;
         authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
 
         //This code writes it to the console
