@@ -136,6 +136,13 @@ int main(){
     }
     cout << endl;
 
+    //Write this information to the output file too
+    outputWriter << "Searched authors: " << authorsToFind[0].substr(authorsToFind[0].rfind(" ")+1, authorsToFind[0].length()-1);
+    for(int i=1;i<5;i++){
+        outputWriter << ", " << authorsToFind[i].substr(authorsToFind[i].rfind(" ")+1, authorsToFind[i].length()-1);
+    }
+    outputWriter << endl;
+
     string lineAuthor;
     string authorToCompare;
     int maxAuthorOccurrences = 0;
@@ -154,14 +161,14 @@ int main(){
                 authorOccurrences[i]++;
             }
         }
+
+        //Calculating the total number of authors in the catalogue file
+        maxAuthorOccurrences++;
     }
 
     //Start dealing with printing out the bar chart;
-    cout << "Author Occurrence:" << endl;
-    //Calculating the total number of authors in the catalogue file
-    for(int i=0;i<5;i++){
-        maxAuthorOccurrences += authorOccurrences[i];
-    }
+    cout << "Author Occurrence (*not representative)" << endl;
+    outputWriter << "Author Occurrence (*not representative)" << endl;
     
     //Creating the actual bar chart now
         //Now figure out how to write this to a text file
@@ -169,7 +176,7 @@ int main(){
     int barsToDraw;
     for(int i=0;i<5;i++){
         //This will dictate how many bars are drawn for each author in the bar chart
-        barsToDraw = (authorOccurrences[i] * maxBarChartSigns / maxAuthorOccurrences);
+        barsToDraw = authorOccurrences[i] % maxBarChartSigns ;
         authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
 
         //This code writes it to the console
