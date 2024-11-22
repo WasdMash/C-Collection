@@ -63,13 +63,7 @@ class ReadCatalog
       */
      string extractAuthor(string line);
 
-<<<<<<< HEAD
      string removePunct(string &author);
-=======
-     void createOutput(); //might need a const rightafter to prevent issues with const &ReadCatalog in << overload
-
-     friend ostream& operator<< (ostream &os, const ReadCatalog &other);
->>>>>>> 0065ee860e51aff266dd0ee63b62c5dc6283c2aa
 
 };
 
