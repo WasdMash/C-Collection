@@ -49,7 +49,7 @@ class ReadCatalog
      */
      bool isNextAuthor();
 
-     //returns the catalo
+     friend ostream& operator<<(ostream &os, const ReadCatalog& other);
 
   private:
      ifstream catalogFile;
@@ -62,6 +62,8 @@ class ReadCatalog
       * @return - string - the extracted author name.
       */
      string extractAuthor(string line);
+
+     string removePunct(string &author);
 
 };
 

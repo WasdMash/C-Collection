@@ -7,14 +7,6 @@
 
 using namespace std;
 
-Member::Member(string name, int age, string membershipID, vector<string> borrowedBooks){
-    //Don't forget the 'this' keyword, otherwise the compiler will fail to tell where to assign the values
-    this->name = name;
-    this->age = age;
-    this->membershipID = membershipID;
-    this->borrowedBooks = borrowedBooks;
-}
-
 ostream& operator<<(ostream &os, const Member &other)
 {
     os << "Your age is " << other.age << endl
