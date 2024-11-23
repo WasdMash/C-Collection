@@ -1,5 +1,8 @@
-Tolkien        == 2 (28%)
-Orwell         = 1 (14%)
-Austen         = 1 (14%)
-Rowling        = 1 (14%)
-Hemingway      == 2 (28%)
+Searched authors: Tolkien, Orwell, Austen, Rowling, Hemingway
+
+Author Occurrence:
+Tolkien        == 2 (28%) 
+Orwell         = 1 (14%) 
+Austen         = 1 (14%) 
+Rowling        = 1 (14%) 
+Hemingway      == 2 (28%) 

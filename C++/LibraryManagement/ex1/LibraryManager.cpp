@@ -14,10 +14,19 @@ ostream& operator<<(ostream &os, const Member &other)
 
     //Don't forget that I'm supposed to show the three most recently borrowed books
     if(other.borrowedBooks.size() != 0){
-        for(int i=0;i<3;i++){
-            //Could come back to this later to manually add the quotation marks to the book titles
-            os << " - " << other.borrowedBooks[other.borrowedBooks.size()-(i+1)] << endl;
+        if(other.borrowedBooks.size() >= 3){
+            for(int i=0;i<3;i++){
+                //Could come back to this later to manually add the quotation marks to the book titles
+                os << " - " << other.borrowedBooks[other.borrowedBooks.size()-(i+1)] << endl;
+            }
         }
+        else{
+            for(int i=0;i<other.borrowedBooks.size();i++){
+                //Could come back to this later to manually add the quotation marks to the book titles
+                os << " - " << other.borrowedBooks[i] << endl;
+            }
+        }
+        
     }
 
     return os;
@@ -64,6 +73,8 @@ Member findMember(string &memberID, string &password){
 
         //Should return the new Line storing all of the values of this string
         getline(reader, userInfo);
+        //Skips any potential empty lines at the start of the file
+        if(userInfo.length() == 0) getline(reader, userInfo);
         int startPos = 0;
         size_t pos = 0;
         //This loop should fetch the string starting with the membershipID
@@ -204,13 +215,7 @@ int main(){
 
             //As I know the number of books which they are borrowing, I could theoretically also store this in the Member object
 
-            //Quick check if the file is empty
-            ReadMemberInfo.seekg(0, ios::end);
-            if(ReadMemberInfo.tellg() == 0) UserDataBase << endl;
-            ReadMemberInfo.clear();
-            ReadMemberInfo.close();
-
-            UserDataBase << *name << "," << *age << "," << *loggedUserId << "," << *loggedPassword;
+            UserDataBase << endl << *name << "," << *age << "," << *loggedUserId << "," << *loggedPassword;
             for(int i=0;i<*booksToBorrow;i++){
             //Handles the books which the user is immediately borrowing
                 //Ask them for the name of the book to borrow

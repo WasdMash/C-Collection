@@ -1,48 +1,25 @@
-#include <cctype>
-#include <cstdlib>
+#include "ReadCatalog.h"
 #include <iostream>
-#include <iomanip>
-#include <string>
 #include <fstream>
+#include <string>
+#include <vector>
+#include <iomanip>
+#include <cctype>
+#include <algorithm>
 
 using namespace std;
-#include "ReadCatalog.h"
 
-// Helper function to extract the author's name from a line
-    //If I really cared about multiple authors, I could create and return an array/vector of strings
-string ReadCatalog::extractAuthor(string line)
-{
-    // The line is expected to be in the format "Book Title by Author Name".
-    string delimiter = " by ";
-    //This should, in theory, get the string by starting from the by until the end of the line
-    string authorName = line.substr(line.rfind(delimiter)+delimiter.length(), line.length()-1);
-    //The graph uses the surname, which is separated by a single space
-    //Annoyingly, some of these books have multiple authors which I should take into consideration
-    string authorSurname = authorName.substr(authorName.rfind(" ")+1, authorName.length()-1);
-    return authorSurname;
+// Constructor: Opens the catalog file
+ReadCatalog::ReadCatalog(const char *filename) {
+	catalogFile.open(filename);
+	if (!catalogFile) {
+		cerr << "Error: Unable to open catalog file: " << filename << endl;
+		exit(1);
+	}
+	// Initialize for reading authors
+	getline(catalogFile, nextLine);
+	eofFound = false;
 }
-
-ReadCatalog::ReadCatalog(const char *fname)
-{
-    // Open the catalog file.
-    catalogFile.open(fname);
-    if (!catalogFile)
-    {
-        cout << "Failed to open " << fname << endl;
-        exit(1);
-    }
-    // Read the first line for lookahead.
-    getline(catalogFile, nextLine);
-    eofFound = false;
-}
-
-//This is the function which should automatically create the output of the program
-    //It should be both printed to the console and to a text file
-    /*
-    ostream& operator<<(ostream &os, const ReadCatalog& other){
-        return os;
-    }
-    */
 
 string ReadCatalog::removePunct(string &author){
     string newAuthString = "";
@@ -54,74 +31,69 @@ string ReadCatalog::removePunct(string &author){
         if(check) newAuthString += tolower(author[i]);
     }
     //Returns an empty string if there are no letters
-    return const_cast<string&>(newAuthString);
+    return newAuthString;
 }
 
-string ReadCatalog::getNextAuthor()
-{
-
-    // Uses a one-word lookahead to avoid any problems relating to when end-of-file
-    // is detected due to absence/presence of newline at end of file.
-
-
-    string line = nextLine;
-    getline(catalogFile, nextLine);
-
-    if (catalogFile.eof()) eofFound = true;
-
-    string author = extractAuthor(line);
-    author = removePunct(author);
-    return author;
+// Closes the catalog file
+void ReadCatalog::close() {
+	if (catalogFile.is_open()) {
+		catalogFile.close();
+	}
 }
 
-
-bool ReadCatalog::isNextAuthor()
-{
-    return !eofFound;
+// Returns true if there are more authors in the file
+bool ReadCatalog::isNextAuthor() {
+	return !eofFound;
 }
 
-void ReadCatalog::close()
-{
-    catalogFile.close();
+// Returns the next author in the file or an empty string if none found
+string ReadCatalog::getNextAuthor() {
+	string line = nextLine;
+	if (getline(catalogFile, nextLine).eof()) {
+		eofFound = true;
+	}
+	return extractAuthor(line);
 }
 
-int main(){
-    
-    //Don't forget that the user should ask for the name of the file containing the search authors
-    string authorFileName;
-    cout << "Please enter the name of the file containing the search authors: ";
-    getline(cin, authorFileName); //Don't forget to add the .txt if they forget to add it
-    //The user should ask for the name of the catalogue file to be analysed
-    string catalogueFileName; //By default, should be "book_catalog.txt"
-    cout << "Please enter the name of the catalogue file:";
-    getline(cin, catalogueFileName);
-    //The user should ask for the name of the output file
-    string outputFileName;
-    cout << "Please enter the name of the output file: ";
-    getline(cin, outputFileName);
+// Extracts the author's name from a line (helper function)
+string ReadCatalog::extractAuthor(string line) {
+	// The line is expected to be in the format "Book Title by Author Name".
+    string delimiter = " by ";
+    //This should, in theory, get the string by starting from the by until the end of the line
+    string authorName = line.substr(line.rfind(delimiter)+delimiter.length());
+    //The graph uses the surname, which is separated by a single space
+    //Annoyingly, some of these books have multiple authors which I should take into consideration
+    string authorSurname = authorName.substr(authorName.rfind(" ")+1);
+    return authorSurname;
+}
 
-    //Don't forget to check if they have the .txt on the end
-        //If so, I'll add it myself
-
+// Overloaded << operator for ReadCatalog
+ostream &operator<<(ostream &os, ReadCatalog &catalogue) {
+	// Get author list from the user
+	string authorFileName, outputFileName;
+	cout << "Enter the name of the file containing authors: ";
+	getline(cin, authorFileName);
     if(authorFileName.substr(authorFileName.length() - 4, 4) != ".txt"){
-        authorFileName += ".txt";
+    authorFileName += ".txt";
     }
-    if(catalogueFileName.substr(catalogueFileName.length() - 4, 4) != ".txt"){
-        catalogueFileName += ".txt";
-    }
-    if(outputFileName.substr(outputFileName.length() - 4, 4) != ".txt"){
+
+    // Ask the user for the output file name
+	cout << "Enter the name of the output file: ";
+	getline(cin, outputFileName);
+     if(outputFileName.substr(outputFileName.length() - 4, 4) != ".txt"){
         outputFileName += ".txt";
     }
 
-    //Now, try using these file names to open their respective files
-    ifstream authorReader(authorFileName);
-    ReadCatalog catalogue(catalogueFileName.c_str());
-    ofstream outputWriter(outputFileName);
-    if(!authorReader || !outputWriter){
-        //Then, clearly neither of these files exist and the code should terminate cleanly
-        abort();
-    }
-    //Go search through the whole file and find the occurrences of each author name
+    // Redirect output to the specified file
+	ofstream outputWriter(outputFileName);
+
+	ifstream authorReader(authorFileName);
+	if (!authorReader) {
+		cout << "Error: Unable to open author file: " << authorFileName << endl;
+		exit(1);
+	}
+
+	    //Go search through the whole file and find the occurrences of each author name
     
     string authorsToFind[5];
     int authorOccurrences[5] = {0};
@@ -130,11 +102,12 @@ int main(){
     }
     //Prints out the searched authors line in the PDF
         //Don't forget to have this saved to the output file also
-    cout << "Searched authors: " << authorsToFind[0].substr(authorsToFind[0].rfind(" ")+1, authorsToFind[0].length()-1);
+    string authorOutput = "";
+    authorOutput += string("Searched authors: ") + authorsToFind[0].substr(authorsToFind[0].rfind(" ")+1, authorsToFind[0].length()-1);
     for(int i=1;i<5;i++){
-        cout << ", " << authorsToFind[i].substr(authorsToFind[i].rfind(" ")+1, authorsToFind[i].length()-1);
+        authorOutput += string(", ") + authorsToFind[i].substr(authorsToFind[i].rfind(" ")+1, authorsToFind[i].length()-1);
     }
-    cout << endl;
+    authorOutput += string("\n") + string("\n");
 
     string lineAuthor;
     string authorToCompare;
@@ -149,15 +122,17 @@ int main(){
         //Searches to find which author it is and logs relevant information
         for(int i=0;i<5;i++){
             authorToCompare = authorsToFind[i].substr(authorsToFind[i].find(" ")+1, authorsToFind[i].length()-1);
-            if(lineAuthor == removePunct(authorToCompare)){
+            if(catalogue.removePunct(lineAuthor) == catalogue.removePunct(authorToCompare)){
                 //We've found yet another, so log this
                 authorOccurrences[i]++;
             }
         }
     }
 
+
     //Start dealing with printing out the bar chart;
-    cout << "Author Occurrence:" << endl;
+    authorOutput += "Author Occurrence:" + string("\n");
+
     //Calculating the total number of authors in the catalogue file
     for(int i=0;i<5;i++){
         maxAuthorOccurrences += authorOccurrences[i];
@@ -167,6 +142,7 @@ int main(){
         //Now figure out how to write this to a text file
         //Maybe store the values in a string and then write this line to the console and the output file
     int barsToDraw;
+    int spacesToDraw = 0;
     for(int i=0;i<5;i++){
         //This will dictate how many bars are drawn for each author in the bar chart
         barsToDraw = (authorOccurrences[i] * maxBarChartSigns / maxAuthorOccurrences);
@@ -174,15 +150,17 @@ int main(){
 
         //This code writes it to the console
         //The string(barsToDraw, "=") tells the code to create of length barsToDraw made of just the = symbol
-        cout << setw(15) << left << authorToCompare << string(barsToDraw, '=') << " ";
-        cout << authorOccurrences[i] << " (" << (authorOccurrences[i]*100 / maxAuthorOccurrences) << "%)" << endl;
+        spacesToDraw = 15-authorToCompare.length();
 
-        //This code writes it to the text file
-        outputWriter << setw(15) << left << authorToCompare << string(barsToDraw, '=') << " ";
-        outputWriter << to_string(authorOccurrences[i]) << " (" << to_string((authorOccurrences[i]*100 / maxAuthorOccurrences)) << "%)" << endl;
+        authorOutput +=  authorToCompare + string(spacesToDraw, ' ') + string(barsToDraw, '=') + " ";
+        authorOutput += to_string(authorOccurrences[i]) + string(" (") + to_string(authorOccurrences[i]*100 / maxAuthorOccurrences) + string("%) \n");
     }
 
-    outputWriter.close();
+    //This code writes it to the text file
+    os << authorOutput;
+    outputWriter << authorOutput;
     authorReader.close();
-    catalogue.close();
+    outputWriter.close();
+
+	return os;
 }
