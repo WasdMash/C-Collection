@@ -2,10 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <iomanip>
 #include <cctype>
-#include <algorithm>
 
 using namespace std;
 
