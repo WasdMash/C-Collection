@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "system_error": "cpp",
+        "xlocale": "cpp",
+        "iosfwd": "cpp",
+        "xstring": "cpp",
+        "string": "cpp",
+        "utility": "cpp",
+        "sstream": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}

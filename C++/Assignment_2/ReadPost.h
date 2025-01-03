@@ -21,6 +21,8 @@
 #include <map>
 #include <stdexcept>
 #include <cstdlib> // For rand(), srand()
+#include <vector>
+#include "User.h"
 
 using namespace std;
 
@@ -62,7 +64,7 @@ public:
      *
      * @return A randomly selected post from the data structure.
      */
-    string findPost();
+    pair<string, string>& findPost();
 
     /**
      * Retrieves a post for the given userID.
@@ -73,9 +75,52 @@ public:
      */
     string getPost(const string &userID) const;
 
+    /*
+    *   Gets a post written by an unknown user
+    *    Searches through the posts multimap until the post is found
+    *    
+    *   * @return the user ID of the person who wrote the post
+    */
+   string findAuthor(const string &originalPost) const;
+
+   /*
+        Takes a post and the blacklist file name and then scans the blacklist
+        Replaces all banned words/phrases in post content with # and then writes this to the post content file
+        Adds a #moderatedPost tag on the end of the post
+   */
+
+  void moderatePost(pair<string, string>& post, string blacklistName, string postFileName);
+
+  pair<string, string>& addPost(int userID, string postContent);
+
+  User& nextUser(); //used to iterate across and return the next user in the uesrs vector for us to do stuff with
+
+  void addUser(User& newUser){
+    users.push_back(newUser);
+  }
+
+  vector<User>& getUsers(){
+    return users;
+  }
+
+  //This function will update the text file storing all of the posts
+  void updateTextFile();
+
+  //This function will automatically moderate all of the posts and update the text file accordingly
+  void moderateAllPosts(string blacklistName, string postFileName){
+    vector< multimap<string, string> > it;
+    for(it = posts.begin(); it != posts.end(); it++){
+      moderatePost(*it, blacklistName, postFileName);
+    }
+    updateTextFile();
+  }
+
 private:
     ifstream postfile;
     multimap<string, string> posts; // Keyed by userID, value is a string representing the post
+    vector<User> users;
+    vector<User>::iterator userIT = users.end(); //Iterator used to make my ReadPosts class a custom iterable container
+    
 };
 
 #endif
