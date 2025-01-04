@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <cstring>
 #include "User.h"
 #include "Manager.h"
 #include "ReadPost.h"
@@ -37,7 +38,7 @@ string blacklistName = "blacklist.txt";
 
 // Template function for login
 template <class T>
-T login(string &username, ReadPost& postManager) {
+T login(string &username, ReadPosts& postManager) {
     ifstream userFile("users.txt");
     if (!userFile) {
         throw WrongFileFormatException();
@@ -61,7 +62,7 @@ T login(string &username, ReadPost& postManager) {
         } else if (to_string(regNo).length() == 4) {
             // Manager
             
-            if(tolower(fullname) == tolower(username)){
+            if(tolower(fullName) == tolower(username)){
                 //Wait first before returning
                 *managerName = fullName;
                 *managerID = regNo;
@@ -83,7 +84,7 @@ T login(string &username, ReadPost& postManager) {
     
     //Now let's check to see if any of these users is what we are looking for
         //Should probably update each of their score first before we return any of them
-    for(vector<Users>::iterator it; it != users.end(); it++){
+    for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){
         if(it->getName() == username){
             return *it;
         }
@@ -98,7 +99,7 @@ void printUser(User& currentUser){
     cout << currentUser << endl;
 }
 
-void updateUserDatabase(ReadPost &postManager){
+void updateUserDatabase(ReadPosts &postManager){
     ifstream oldUserDataBase("users.txt"); //This is the current file
     ofstream newUserDatabase("temp.txt"); //This'll be the new database
 
@@ -137,7 +138,7 @@ void updateUserDatabase(ReadPost &postManager){
 }
 
 // User options menu
-void userOptions(User &currentUser, ReadPost& postManager) {
+void userOptions(User &currentUser, ReadPosts& postManager) {
     int choice = 0;
     
     while (choice != 5) {
@@ -153,7 +154,7 @@ void userOptions(User &currentUser, ReadPost& postManager) {
         case 1: {
             string *readingPostChoice = new string;
             while(*readingPostChoice != "1" && *readingPostChoice != "2" && *readingPostChoice != "3"){
-                //Should actually return the index to this post from ReadPost so that we can change its reputation score
+                //Should actually return the index to this post from ReadPosts so that we can change its reputation score
                 pair<string, string> postContent = postManager.findPost();
                 cout << postContent.second << endl;
 
@@ -161,35 +162,29 @@ void userOptions(User &currentUser, ReadPost& postManager) {
                 cout << "Reading post Options:\n"
                     << "1. Read another post\n"
                     << "2. Report this post\n"
-                    << "3. Exit\n";
+                    << "3. Go back to the main menu\n";
                 cin >> *readingPostChoice;
 
-                switch(*readingPostChoice){
-                    case "1":
-                        cout << "Fetching new post now..." << endl << endl;
-                        break;
-                    case "2":
-                        //The post is getting reported and the user who posted it will be punished
-                        vector<User> userVector = postManager.getUsers();
-                        for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
-                            if(it->getRegNo() == stoi(postContent.first)){
-                                //This is the user whose post is getting reported
-                                //Then also update the reputation score of that user
-                                it->loseReputation(postContent.second, 10); //it should be -10 per reported post
-                                it->updateScores();
-                                updateUserDatabase(postManager);
-                                break;
-                            }
+                if(*readingPostChoice == "1") cout << "Fetching new post now..." << endl << endl;
+                if(*readingPostChoice == "2"){
+                    //The post is getting reported and the user who posted it will be punished
+                    vector<User> userVector = postManager.getUsers();
+                    for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
+                        if(it->getRegNo() == stoi(postContent.first)){
+                            //This is the user whose post is getting reported
+                            //Then also update the reputation score of that user
+                            it->loseReputation(postContent.second, 10); //it should be -10 per reported post
+                            it->updateScores();
+                            updateUserDatabase(postManager);
+                            break;
                         }
-                        //Need to update the users text file to accommodate this change
-                        break;
-                    case "3":
-                        cout << "Exiting the program now" << endl;
-                        exit(1);
-                        break;
-                    default:
-                        cout << "Invalid option. Please only enter values between 1 and 3, thank you" << endl;
+                    }
                 }
+                if(*readingPostChoice == "3"){
+                    cout << "Exiting the program now" << endl;
+                    break; //Should take the user back to the main menu
+                }
+                else cout << "Invalid option. Please only enter values between 1 and 3, thank you" << endl;
             }
                 
         }
@@ -242,7 +237,7 @@ void userOptions(User &currentUser, ReadPost& postManager) {
 }
 
 // Manager options menu
-void managerOptions(Manager &currentManager, ReadPost& postManager) {
+void managerOptions(Manager &currentManager, ReadPosts& postManager) {
     int choice = 0;
 
     while (choice != 5) {
@@ -312,7 +307,7 @@ int main() {
     string username;
     cout << "Enter your username: ";
     cin >> username;
-    ReadPost postManager(postFileName.c_str());
+    ReadPosts postManager(postFileName.c_str());
     try{
         postManager.readAllPosts();
     }
