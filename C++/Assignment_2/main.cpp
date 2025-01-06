@@ -335,7 +335,7 @@ int main() {
     }
 
     try {
-        auto user = login(username, postManager);
+        auto user = login<Person>(username, postManager);
         //Should check down here if user is a user or a manager
         if(user.getRegNo() < 10000){
             //Must be a manager then
