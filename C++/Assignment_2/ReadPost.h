@@ -110,7 +110,7 @@ public:
   void moderateAllPosts(string blacklistName, string postFileName){
     multimap<string, string>::iterator it;
     for(it = posts.begin(); it != posts.end(); it++){
-      moderatePost(it, blacklistName, postFileName);
+      moderatePost(*it, blacklistName, postFileName);
     }
     updateTextFile();
   }

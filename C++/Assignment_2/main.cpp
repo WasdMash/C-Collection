@@ -67,15 +67,15 @@ T login(string &username, ReadPosts& postManager) {
             string *loweredUsername = new string;
 
             for(int i=0;i<fullName.length();i++){
-                if(isalpha(fullname[i])){
+                if(isalpha(fullName[i])){
                     //Only adding letters to username
-                    loweredFullName->append(tolower(fullName[i]));
+                    *loweredFullName += tolower(fullName[i]);
                 }
             }
             for(int i=0;i<username.length();i++){
                 if(isalpha(username[i])){
                     //Only adding letters to username
-                    loweredUserName->append(tolower(username[i]));
+                    loweredUsername->append(tolower(username[i]));
                 }
             }
             
@@ -235,7 +235,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             vector<User> filteredUsers;
             vector<User>::iterator tempIt; //Temp iterator used to copy valid users into filteredUsers
             
-            for(tempIt = postManager.getUsers().begin(); tempIt != postManager.getUsers.end(); tempIt++){
+            for(tempIt = postManager.getUsers().begin(); tempIt != postManager.getUsers().end(); tempIt++){
                 if(tempIt->getReputation() >= 0){
                     filteredUsers.push_back(*tempIt); //Add this valid user to the filteredUsers to be used later
                 }
@@ -330,12 +330,12 @@ int main() {
         postManager.readAllPosts();
     }
     catch(...){
-        cout << postFileName << " doesn't exist and so this program can't do much now, so bye bye" << end;
+        cout << postFileName << " doesn't exist and so this program can't do much now, so bye bye" << endl;
         exit(1);
     }
 
     try {
-        auto user = login<Person>(username, postManager);
+        auto user = login(username, postManager);
         //Should check down here if user is a user or a manager
         if(user.getRegNo() < 10000){
             //Must be a manager then
