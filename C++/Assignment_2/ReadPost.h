@@ -110,10 +110,13 @@ public:
   void moderateAllPosts(string blacklistName, string postFileName){
     multimap<string, string>::iterator it;
     for(it = posts.begin(); it != posts.end(); it++){
-      moderatePost(*it, blacklistName, postFileName);
+      moderatePost(it, blacklistName, postFileName);
     }
     updateTextFile();
   }
+
+  //Gets the user's scores from the posts multimap and initialises their scores before the rest of the program runs
+  void initialiseUserScores(User& user);
 
 private:
     ifstream postfile;

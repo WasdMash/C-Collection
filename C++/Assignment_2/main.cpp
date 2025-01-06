@@ -58,22 +58,41 @@ T login(string &username, ReadPosts& postManager) {
         if (to_string(regNo).length() == 9) {
             // User
             User newUser(fullName, regNo);
+            //Should probably update their scores from ReadPosts here
+            postManager.initialiseUserScores(newUser);
             postManager.addUser(newUser);
         } else if (to_string(regNo).length() == 4) {
             // Manager
+            string *loweredFullName = new string;
+            string *loweredUsername = new string;
+
+            for(int i=0;i<fullName.length();i++){
+                if(isalpha(fullname[i])){
+                    //Only adding letters to username
+                    loweredFullName->append(tolower(fullName[i]));
+                }
+            }
+            for(int i=0;i<username.length();i++){
+                if(isalpha(username[i])){
+                    //Only adding letters to username
+                    loweredUserName->append(tolower(username[i]));
+                }
+            }
             
-            if(tolower(fullName) == tolower(username)){
+            if(*loweredFullName == *loweredUsername){
                 //Wait first before returning
                 *managerName = fullName;
                 *managerID = regNo;
             }
+
+            delete loweredFullName; delete loweredUsername;
         } else {
             throw WrongFileFormatException();
         }
     }
 
     //Let's check if our manager exists
-    if(strlen(*managerName) > 0){
+    if(managerName->length() > 0){
         //Then, our manager exists and we should return him
         Manager newManager(*managerName, *managerID);
         return newManager;
@@ -83,7 +102,6 @@ T login(string &username, ReadPosts& postManager) {
     delete managerName; delete managerID;
     
     //Now let's check to see if any of these users is what we are looking for
-        //Should probably update each of their score first before we return any of them
     for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){
         if(it->getName() == username){
             return *it;
@@ -106,14 +124,14 @@ void updateUserDatabase(ReadPosts &postManager){
     if(oldUserDataBase){
         string *currentLine = new string;
         while(getline(oldUserDataBase, *currentLine)){
-            if(strlen(*currentLine) > 1){
+            if(currentLine->length() > 1){
                 //Should by default copy all managers from the old to the new
                 string *ID = new string;
                 stringstream currentLineSS(*currentLine);
                 currentLineSS >> *ID;
                 //If the ID is 4 digits, then it's a manager and we'll copy their details to the new file
                     //Otherwise, we'll skip it for now and add the user info from the program to the file afterwards
-                if(strlen(*ID) == 4){
+                if(ID->length() == 4){
                     //We have found a manager's details to copy to the new file
                     newUserDatabase << *currentLine;
                 }
@@ -191,7 +209,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
         case 2: {
             string newPost = "";
             
-            while(strlen(newPost) < 1 && strlen(newPost) > 140){
+            while(newPost.length() < 1 && newPost.length() > 140){
                 cout << "Write your post (max 140 characters): ";
                 cin.ignore();
                 getline(cin, newPost);
@@ -290,7 +308,7 @@ void managerOptions(Manager &currentManager, ReadPosts& postManager) {
         case 4:
             cout << "Enter new post file name: ";
             cin >> postFileName;
-            if(postFileName.substr(strlen(postFileName)-4), 4 != ".txt"){
+            if(postFileName.substr(postFileName.length()-4) != ".txt"){
                 postFileName.append(".txt"); //Adding the text file extension to the end in case the manager forgot to do so
             }
             break;
@@ -332,7 +350,7 @@ int main() {
         cout << e.what() << endl;
         //This is where we should create the new user which doesn't exist yet
         string *newUserId = new string;
-        while(strlen(*newUserId) != 9){
+        while(newUserId->length() != 9){
             cout << "Enter new user ID (9 digits): ";
             cin.ignore();
             getline(cin, *newUserId);

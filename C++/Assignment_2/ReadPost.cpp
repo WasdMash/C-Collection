@@ -171,7 +171,7 @@ void ReadPosts::moderatePost(pair<string, string>& post,  string blacklistName, 
     //At this point, the text file should be updated accordingly
 }
 
-void ReadPost::updateTextFile(){
+void ReadPosts::updateTextFile(){
     postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
     string *currentLine = new string;
@@ -226,7 +226,7 @@ void ReadPost::updateTextFile(){
 }
 
 //Iterates across the users vector to find what we are looking for
-User& ReadPost::nextUser(){
+User& ReadPosts::nextUser(){
     if(userIT == users.end()){
         //Should set the thing to start at the beginning again and return the first value
         userIT = users.begin();
@@ -239,4 +239,13 @@ User& ReadPost::nextUser(){
     posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
     return *(posts.end());
+ }
+
+ void ReadPosts::initialiseUserScores(User& user){
+    for(multimap<string, string>::iterator it = posts.begin(); it != posts.end(); it++){
+        if(stoi(user.getRegNo()) == it->first){
+            //If this post was written by the user
+            user.addScore(100, it->second); //By default, each post should start with a reputation score of 100
+        }
+    }
  }
