@@ -335,13 +335,8 @@ int main() {
     }
 
     try {
-        auto user = login<Person>(username, postManager);
-        //Should check down here if user is a user or a manager
-        if(user.getRegNo() < 10000){
-            //Must be a manager then
-            managerOptions(user, postManager);
-        }
-        else if(user.getRegNo() < 10000000000 && user.getRegNo() > 1000000000){
+        User user = login<User>(username, postManager);
+        if(user.getRegNo() < 10000000000 && user.getRegNo() > 1000000000){
             //The reg ID should be 9 digits, which is a user's ID
             userOptions(user, postManager);
         }
@@ -368,7 +363,19 @@ int main() {
     } catch (const WrongFileFormatException &e) {
         cout << e.what() << endl;
     } catch (...) {
-        cout << "An unknown error occurred." << endl;
+        //If we are unable to log in as a user, then let's try as a manager instead
+        try{
+            Manager manager = login<Manager>(username, postManager);
+            //Should check down here if user is a user or a manager
+            if(manager.getRegNo() < 10000){
+                //Must be a manager then
+                managerOptions(manager, postManager);
+            }
+        }
+        catch(exception& e){
+            cout << "We are unable to login this user as either a user or a manager, therefore, the program shall quit" << endl;
+        }
+        
     }
 
     return 0;
