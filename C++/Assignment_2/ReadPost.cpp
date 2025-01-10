@@ -158,14 +158,17 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
                     //We have found the user who triggered a moderation in their posts
                         //Therefore, let's punish them
                         it->updatedModeratedPosts();
-                        it->loseReputation(post, min(100, currentBadWord->length()));
+                        int *postScore = new int;
+                        *postScore = min(100, currentBadWord->length());
+                        it->loseReputation(post, *postScore);
+                        delete postScore;
                 }
             }
 
             int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
             string moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
             for(int i=0; i<currentBadWord->length(); i++){
-                if((*currentBadWord)[i] != " ") moderatedPost += "X"; //censoring the bad word here, of course
+                if((*currentBadWord)[i] != ' ') moderatedPost += "X"; //censoring the bad word here, of course
                 else moderatedPost += " "; //Want to make it clear that we aren't just censoring one big word
             }
             //Adding the rest of the string back to censor only part of it
