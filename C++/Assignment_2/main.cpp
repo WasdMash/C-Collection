@@ -165,6 +165,9 @@ void updateUserDatabase(ReadPosts &postManager){
 // User options menu
 void userOptions(User &currentUser, ReadPosts& postManager) {
     int choice = 0;
+    //These will be used for an input of 4 but compielr throws a hissy fit due to scope if I declare them in a case statement
+    vector<User> filteredUsers;
+    vector<User>::iterator tempIt; //Temp iterator used to copy valid users into filteredUsers
     
     while (choice != 5) {
         cout << "User Options:\n"
@@ -239,8 +242,6 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             break;
         case 4:
             // Display top 10 problematic users
-            vector<User> filteredUsers;
-            vector<User>::iterator tempIt; //Temp iterator used to copy valid users into filteredUsers
             
             for(tempIt = postManager.getUsers().begin(); tempIt != postManager.getUsers().end(); tempIt++){
                 if(tempIt->getReputation() >= 0){
