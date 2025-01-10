@@ -89,7 +89,7 @@ public:
         Adds a #moderatedPost tag on the end of the post
    */
 
-  void moderatePost(pair<string, string>& post, string blacklistName, string postFileName);
+  void moderatePost(const pair<string, string>& post, string blacklistName, string postFileName);
 
   pair<string, string>& addPost(int userID, string postContent);
 
