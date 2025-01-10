@@ -104,7 +104,7 @@ public:
   }
 
   //This function will update the text file storing all of the posts
-  void updateTextFile();
+  void updateTextFile(string postFileName);
 
   //This function will automatically moderate all of the posts and update the text file accordingly
   void moderateAllPosts(string blacklistName, string postFileName){
