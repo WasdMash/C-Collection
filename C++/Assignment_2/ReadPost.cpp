@@ -41,15 +41,13 @@ void ReadPosts::readAllPosts()
     // Adjust parsing if your data differs. Here we assume no spaces in post_content.
     // Insert all posts from file into multimap
     string currentLine,  cur_userID, cur_user_post;
-    char tabDelim = "\t";
-    char spaceDelim = " ";
     
     while(getline(postfile, currentLine)){
         //Split this getline using a space delimiter of some sorts
         //To insert into the multimap, I just need the userID and then post content
         stringstream currentLineSS(currentLine);
-        getline(currentLineSS, cur_userID, tabDelim); //Gets the user ID first from this line
-        getline(currentLineSS, cur_user_post, spaceDelim); //Dummy getline to skip the post ID
+        getline(currentLineSS, cur_userID, '\t'); //Gets the user ID first from this line
+        getline(currentLineSS, cur_user_post, ' '); //Dummy getline to skip the post ID
         getline(currentLineSS, cur_user_post); //Need to get the rest of the line and cut off when we first encounter a digit
             //If we see a digit, then we have clearly managed to get the post content
 
@@ -82,7 +80,7 @@ string ReadPosts::findAuthor(const string &originalPost) const{
     return "";
 }
 
-pair<string, string>& ReadPosts::findPost()
+pair<string, string> ReadPosts::findPost()
 {
     // to be implemented by you
     // Return the post string that is randomly found in the multimap
@@ -90,7 +88,7 @@ pair<string, string>& ReadPosts::findPost()
     if(postRange > 0){
         //Do stuff becaause the posts multipmap isn't empty
         int randIndex = rand() % postRange; //Should in theory return a random integer between 0 and range-1
-        multimap<string, string>::iterator it;
+        multimap<string, string>::iterator it = posts.begin();
         advance(it, randIndex); //Advances the it iterator by randIndex times 
         //I should return the post from this iterator which should be it->second
         return *it;
@@ -98,7 +96,7 @@ pair<string, string>& ReadPosts::findPost()
     else{
         //clearly the post multimap is empty, so let's exit with grace
         cout << "The posts multimap is empty, therefore a post couldn't be returned." << endl;
-        return const pair<string, string>("",""); //Returning an empty string to satisfy return conditions
+        return pair<string, string>("",""); //Returning an empty string to satisfy return conditions
     }
 }
 
@@ -128,7 +126,7 @@ string ReadPosts::getPost(const string &userID) const
     return "";  
 }
 
-void ReadPosts::moderatePost(const pair<string, string>& post,  string blacklistName, string postFileName){
+void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName){
     ifstream blacklist(blacklistName); //This is the file from which we shall read all of our banned words/phrases line by line
     string *currentBadWord = new string;
     while(getline(blacklist, *currentBadWord)){
@@ -180,7 +178,7 @@ void ReadPosts::moderatePost(const pair<string, string>& post,  string blacklist
                 //Would be a lot easier to do once I've made this an iterable container
 
             //Should updated the original post to be later updated in the text file
-            post.second = moderatedPost;
+            const_cast<string&>(post.second) = moderatedPost;
         }
     }
     delete currentBadWord;
@@ -191,8 +189,6 @@ void ReadPosts::updateTextFile(string postFileName){
     postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
     string *currentLine = new string;
-    char tabDelim = "\t";
-    char spaceDelim = " ";
 
     while(getline(postfile, *currentLine)){
         //Want to avoid errors caused by the newline character on the last line of the file
@@ -203,8 +199,8 @@ void ReadPosts::updateTextFile(string postFileName){
             string *postDate = new string;
 
             stringstream currentLineSS(*currentLine);
-            getline(currentLineSS, *userID, tabDelim); //Gets the user ID first from this line
-            getline(currentLineSS, *postID, spaceDelim); //Dummy getline to skip the post ID
+            getline(currentLineSS, *userID, '\t'); //Gets the user ID first from this line
+            getline(currentLineSS, *postID, ' '); //Dummy getline to skip the post ID
             getline(currentLineSS, *postContent); //Need to get the rest of the line and cut off when we first encounter a digit
                 //If we see a digit, then we have clearly managed to get the post content
 

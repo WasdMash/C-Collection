@@ -64,7 +64,7 @@ public:
      *
      * @return A randomly selected post from the data structure.
      */
-    pair<string, string>& findPost();
+    pair<string, string> findPost();
 
     /**
      * Retrieves a post for the given userID.
@@ -89,7 +89,7 @@ public:
         Adds a #moderatedPost tag on the end of the post
    */
 
-  void moderatePost(const pair<string, string>& post, string blacklistName, string postFileName);
+  void moderatePost(const pair<string, string>& post, string blacklistName);
 
   pair<string, string>& addPost(int userID, string postContent);
 
@@ -110,7 +110,7 @@ public:
   void moderateAllPosts(string blacklistName, string postFileName){
     multimap<string, string>::iterator it;
     for(it = posts.begin(); it != posts.end(); it++){
-      moderatePost(*it, blacklistName, postFileName);
+      moderatePost(&(*it), blacklistName);
     }
     updateTextFile(postFileName);
   }
