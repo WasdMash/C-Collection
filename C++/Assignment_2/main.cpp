@@ -75,7 +75,7 @@ T login(string &username, ReadPosts& postManager) {
             for(int i=0;i<username.length();i++){
                 if(isalpha(username[i])){
                     //Only adding letters to username
-                    loweredUsername->append(tolower(username[i]));
+                    *loweredUsername += tolower(username[i]);
                 }
             }
             
@@ -92,21 +92,28 @@ T login(string &username, ReadPosts& postManager) {
     }
 
     //Let's check if our manager exists
-    if(managerName->length() > 0){
-        //Then, our manager exists and we should return him
-        Manager newManager(*managerName, *managerID);
-        return newManager;
+    if (!managerName.empty()) {
+        //Checking if the class type passed into the template function is the same as Manager
+        if constexpr (is_same_v<T, Manager>) {
+            return Manager(managerName, managerID);
+        } else {
+            throw runtime_error("Requested type does not match the identified user type");
+        }
     }
 
     //If not, then let's delete the dynamic variables
     delete managerName; delete managerID;
     
     //Now let's check to see if any of these users is what we are looking for
-    for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){
-        if(it->getName() == username){
-            return *it;
+        //To satisfy the compiler, let's check if the class we passed into the template function is a user
+    if constexpr (is_same_v<T, User>){
+        for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){ 
+            if(it->getName() == username){
+                return *it;
+            }
         }
     }
+    
     
 
     //If we haven't found them to be either a user or manager, then throw an appropiate exception
@@ -309,7 +316,7 @@ void managerOptions(Manager &currentManager, ReadPosts& postManager) {
             cout << "Enter new post file name: ";
             cin >> postFileName;
             if(postFileName.substr(postFileName.length()-4) != ".txt"){
-                postFileName.append(".txt"); //Adding the text file extension to the end in case the manager forgot to do so
+                postFileName += ".txt"; //Adding the text file extension to the end in case the manager forgot to do so
             }
             break;
         case 5:
@@ -355,7 +362,7 @@ int main() {
         ofstream userFile("users.txt", ios::app);
         userFile << username << " " << *newUserId << endl;
 
-        User user = login<Person>(username, postManager);
+        User user = login<User>(username, postManager);
         userOptions(user, postManager);
         
         delete newUserId;
