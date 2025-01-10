@@ -108,9 +108,8 @@ public:
 
   //This function will automatically moderate all of the posts and update the text file accordingly
   void moderateAllPosts(string blacklistName, string postFileName){
-    multimap<string, string>::iterator it;
-    for(it = posts.begin(); it != posts.end(); it++){
-      moderatePost(&(*it), blacklistName);
+    for(auto &post : posts){
+      moderatePost(post, blacklistName);
     }
     updateTextFile(postFileName);
   }

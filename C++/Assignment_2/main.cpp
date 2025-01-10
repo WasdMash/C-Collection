@@ -184,7 +184,9 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             while(*readingPostChoice != "1" && *readingPostChoice != "2" && *readingPostChoice != "3"){
                 //Should actually return the index to this post from ReadPosts so that we can change its reputation score
                 pair<string, string> postContent = postManager.findPost();
-                cout << postContent.second << endl;
+                //If there are posts to be printed, then continue, else qui whilst you're ahead
+                if(!postContent.second.empty()) cout << postContent.second << endl;
+                else break;
 
                 //Presenting the choices to the user
                 cout << "Reading post Options:\n"
