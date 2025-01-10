@@ -5,7 +5,6 @@
 #include <ctime>      // for time()
 #include <sstream>    // for parsing lines
 #include <cctype>
-#include <cstring> //For strlen()
 
 using namespace std;
 
@@ -52,7 +51,7 @@ void ReadPosts::readAllPosts()
             //If we see a digit, then we have clearly managed to get the post content
 
         int *postContentEnd = new int;
-        for(int i=0;i<strlen(cur_user_post);i++){
+        for(int i=0;i<cur_user_post.length();i++){
             if(isdigit(cur_user_post[i])){
                 *postContentEnd = i - 1; //Want to cut off the space/tab before this too
                 break;
@@ -134,22 +133,22 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 
         string *loweredPost = new string;
         for(int i=0;i<loweredPost->length();i++){
-            if(isalpha(*loweredPost[i])){
+            if(isalpha((*loweredPost)[i])){
                 //Only adding letters to username
-                *loweredPost += tolower(*loweredPost[i]);
+                *loweredPost += tolower((*loweredPost)[i]);
             }
         }
 
         //Converting the current bad word to lowercase
         for(int i=0;i<currentBadWord->length();i++){
-            if(isalpha(*currentBadWord[i])){
+            if(isalpha((*currentBadWord)[i])){
                 //Only adding letters to username
-                *currentBadWord += tolower(*currentBadWord[i]);
+                *currentBadWord += tolower((*currentBadWord)[i]);
             }
         }
 
         //Check if the naughty is found within the post
-        int foundBanPhrase = loweredPost->find(tolower(*currentBadWord));
+        int foundBanPhrase = loweredPost->find(*currentBadWord);
         if(foundBanPhrase != string::npos){
             //We have found a bad word
 
@@ -159,18 +158,18 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
                     //We have found the user who triggered a moderation in their posts
                         //Therefore, let's punish them
                         it->updatedModeratedPosts();
-                        it->loseReputation(post, min(100, strlen(*currentBadWord)));
+                        it->loseReputation(post, min(100, currentBadWord->length()));
                 }
             }
 
-            int endIndex = foundBanPhrase + strlen(*currentBadWord); //Need to know when to stop printing Xs
+            int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
             string moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
-            for(int i=0; i<strlen(*currentBadWord); i++){
+            for(int i=0; i<currentBadWord->length(); i++){
                 if((*currentBadWord)[i] != " ") moderatedPost += "X"; //censoring the bad word here, of course
                 else moderatedPost += " "; //Want to make it clear that we aren't just censoring one big word
             }
             //Adding the rest of the string back to censor only part of it
-            moderatedPost += post.second.substr(endIndex, strlen(post.second));
+            moderatedPost += post.second.substr(endIndex, post.second.length());
             //Adding the cute #moderatedpost tag at the end
             moderatedPost += " #moderatedpost";
 
@@ -192,7 +191,7 @@ void ReadPosts::updateTextFile(string postFileName){
 
     while(getline(postfile, *currentLine)){
         //Want to avoid errors caused by the newline character on the last line of the file
-        if(strlen(*currentLine) > 1){
+        if(!currentLine->empty()){
             string *userID = new string;
             string *postID = new string;
             string *postContent = new string;
@@ -205,17 +204,17 @@ void ReadPosts::updateTextFile(string postFileName){
                 //If we see a digit, then we have clearly managed to get the post content
 
             int *postContentEnd = new int;
-            for(int i=0;i<strlen(*postContent);i++){
+            for(int i=0;i<postContent->length();i++){
                 if(isdigit((*postContent)[i])){
                     *postContentEnd = i - 1; //Want to cut off the space/tab before this too
                     break;
                 }
             }
-            *postDate = postContent->substr(*postContentEnd+1, strlen(*postContent));
-            *postContentEnd = postContent->substr(0, *postContentEnd);
+            *postDate = postContent->substr(*postContentEnd+1, postContent->length());
+            *postContent = postContent->substr(0, *postContentEnd);
 
             //Updating the new line in the database
-            newDatabase << *userID << " " << *postID << " " << post.second << " " << *postDate << endl;         
+            newDatabase << *userID << " " << *postID << " " << *postContent << " " << *postDate << endl;         
 
             //Cleaning up the dynamic variables here
             delete userID; delete postID; delete postContent; delete postDate;
@@ -242,9 +241,9 @@ User& ReadPosts::nextUser(){
 }
 
  pair<string, string>& ReadPosts::addPost(int userID, string postContent){
-    posts.insert(pair<string, string>(to_string(userID), postContent));
+    auto it = posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
-    return *(posts.end());
+    return *it;
  }
 
  void ReadPosts::initialiseUserScores(User& user){
