@@ -112,7 +112,7 @@ public:
     for(it = posts.begin(); it != posts.end(); it++){
       moderatePost(*it, blacklistName, postFileName);
     }
-    updateTextFile();
+    updateTextFile(postFileName);
   }
 
   //Gets the user's scores from the posts multimap and initialises their scores before the rest of the program runs
