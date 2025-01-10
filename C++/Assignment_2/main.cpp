@@ -92,10 +92,10 @@ T login(string &username, ReadPosts& postManager) {
     }
 
     //Let's check if our manager exists
-    if (!managerName.empty()) {
+    if (!managerName->empty()) {
         //Checking if the class type passed into the template function is the same as Manager
         if constexpr (is_same_v<T, Manager>) {
-            return Manager(managerName, managerID);
+            return Manager(*managerName, *managerID);
         } else {
             throw runtime_error("Requested type does not match the identified user type");
         }
@@ -211,12 +211,12 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                 }
                 else cout << "Invalid option. Please only enter values between 1 and 3, thank you" << endl;
             }
-                
+            break; 
         }
         case 2: {
             string newPost = "";
             
-            while(newPost.length() < 1 && newPost.length() > 140){
+            while(newPost.empty() || newPost.length() > 140){
                 cout << "Write your post (max 140 characters): ";
                 cin.ignore();
                 getline(cin, newPost);
@@ -254,7 +254,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
         case 5:
             cout << "Goodbye!" << endl;
             exit(1);
-            return;
+            break;
         default:
             cout << "Invalid option. Try again." << endl;
         }
