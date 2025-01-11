@@ -195,7 +195,11 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                     << "3. Go back to the main menu\n";
                 cin >> *readingPostChoice;
 
-                if(*readingPostChoice == "1") cout << "Fetching new post now..." << endl << endl;
+                if(*readingPostChoice == "1"){
+                    cout << "Fetching new post now..." << endl << endl;
+                    //Resetting this nested loop to keep getting posts
+                    *readingPostChoice = "5";
+                } 
                 else if(*readingPostChoice == "2"){
                     //The post is getting reported and the user who posted it will be punished
                     vector<User> userVector = postManager.getUsers();
