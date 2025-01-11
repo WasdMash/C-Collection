@@ -110,6 +110,7 @@ void User::resetModeration(){
 void resetModeratedPost(pair<string, float>& currentPost){
     //We don't want to change the reported posts but just the previously moderated ones
     if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
+        currentPost.first = currentPost.first.substr(currentPost.first.length() - 14)
         currentPost.second = 100;
     }
     
