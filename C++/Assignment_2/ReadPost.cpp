@@ -265,7 +265,7 @@ User& ReadPosts::nextUser(){
     //Now, I'll want to try to convert this to string or input directly into the file
 
     string formattedTime(output); //converts this time to a string
-    ofstream writer(postFileName);
+    ofstream writer(postFileName, ios::app);
     if(writer) writer << userID << " " << *newPostID << " " << postContent << " " << formattedTime << endl;
     else{
         //Fail to open the writer
