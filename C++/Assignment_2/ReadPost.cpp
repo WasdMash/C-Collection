@@ -147,11 +147,13 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
             }
         }
 
+        cout << *loweredPost << " - " < *currentBadWord << endl;
+
         //Check if the naughty is found within the post
         int foundBanPhrase = loweredPost->find(*currentBadWord);
         if(foundBanPhrase != string::npos){
             //We have found a bad word
-
+            cout << foundBanPhrase << endl;
             //Don't forget to find the user with the same regNO and increment their number of moderated posts
             for(vector<User>::iterator it=users.begin(); it != users.end(); it++){
                 if(to_string(it->getRegNo()) == post.first){
@@ -182,7 +184,8 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
                 //Would be a lot easier to do once I've made this an iterable container
 
             //Should updated the original post to be later updated in the text file
-            post.second = moderatedPost;
+            const_cast<string&>(post.second) = moderatedPost;
+            cout << post.second << endl; //Debugging line
         }
     }
     delete currentBadWord;
