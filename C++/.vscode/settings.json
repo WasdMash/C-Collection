@@ -13,6 +13,7 @@
         "utility": "cpp",
         "algorithm": "cpp",
         "xutility": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "xmemory": "cpp"
     }
 }

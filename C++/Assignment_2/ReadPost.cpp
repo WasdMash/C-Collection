@@ -220,8 +220,6 @@ void ReadPosts::updateTextFile(string postFileName){
             getline(currentLineSS, *postContent); //Need to get the rest of the line and cut off when we first encounter a digit
                 //If we see a digit, then we have clearly managed to get the post content
 
-            cout << *userID << " " << *postID << " " << *postContent << " " << *postDate << endl;
-
             int *postContentEnd = new int;
             for(int i=0;i<postContent->length();i++){
                 if(isdigit((*postContent)[i])){
@@ -243,8 +241,14 @@ void ReadPosts::updateTextFile(string postFileName){
     //Renaming the new file to be the same as the old, effectively updating the same file
     close();
     newDatabase.close();
-    remove(postFileName.c_str());
-    rename("temp.txt", postFileName.c_str());
+    try{
+        remove(postFileName.c_str());
+        rename("temp.txt", postFileName.c_str());
+    }
+    catch(...){
+        cout << "This is the problem, silly" << endl;
+    }
+    
     //Pointer clean-up
     delete currentLine;
 }
