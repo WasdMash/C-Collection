@@ -335,7 +335,7 @@ void managerOptions(Manager &currentManager, ReadPosts& postManager) {
 int main() {
     string username;
     cout << "Enter your username: ";
-    cin >> username;
+    getline(cin, username);
     ReadPosts postManager(postFileName.c_str());
     try{
         postManager.readAllPosts();
