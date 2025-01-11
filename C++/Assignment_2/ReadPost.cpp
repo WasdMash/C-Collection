@@ -287,7 +287,7 @@ User& ReadPosts::nextUser(){
     postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
     ofstream writer(postFileName, ios::app);
     if(writer){
-        writer << endl << userID << " " << *newPostID << " " << postContent << " " << formattedTime;
+        writer << endl << userID << "\t" << *newPostID << " " << postContent << " " << formattedTime;
         writer.close();
     } 
     else{
