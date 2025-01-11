@@ -159,8 +159,10 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
                         //Therefore, let's punish them
                         it->updatedModeratedPosts();
                         int *postScore = new int;
-                        *postScore = min(100, currentBadWord->length());
-                        it->loseReputation(post, *postScore);
+                        if(currentBadWord->length() < 100) *postScore = currentBadWord->length();
+                        else *postScore = 100;
+                        
+                        it->loseReputation(post.second, *postScore);
                         delete postScore;
                 }
             }
@@ -243,9 +245,34 @@ User& ReadPosts::nextUser(){
     return *userIT;
 }
 
- pair<string, string>& ReadPosts::addPost(int userID, string postContent){
+ pair<const string, string>& ReadPosts::addPost(int userID, string postContent, string postFileName){
     auto it = posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
+    //I should probably write this to the postfile also
+    int *newPostID = new int; //Used to generate a random 10 digit ID
+    *newPostID = rand() % 10000000000;
+    if(*newPostID < 9000000000) *newPostID += 1000000000;
+    //I need to get the current time and store this in a string
+    
+    time_t timestamp; //Will store time in most basic format
+    char output[50]; //Stores the time as a string in a character buffer
+    struct tm * datetime; //Stores time as date and time format, rather than perhaps ticks
+
+    time(&timestamp);
+    datetime = localtime(&timestamp); //Converts the time into local time for the server
+
+    strftime(output, 50, "%F, %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
+    //Now, I'll want to try to convert this to string or input directly into the file
+
+    string formattedTime(output); //converts this time to a string
+    ofstream writer(postFileName);
+    if(writer) writer << userID << " " << *newPostID << " " << postContent << " " << formattedTime << endl;
+    else{
+        //Fail to open the writer
+        cout << "Failed to successfully write the new post to the database" << endl;
+    }
+
+
     return *it;
  }
 

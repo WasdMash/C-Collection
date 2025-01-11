@@ -228,7 +228,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             }
 
             //Should probably around this point run the moderation function on this text
-            pair<string, string> addedPost =  postManager.addPost(currentUser.getRegNo(), newPost);
+            pair<string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost);
             currentUser.addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
             postManager.moderatePost(addedPost, blacklistName);
             postManager.updateTextFile(postFileName);
