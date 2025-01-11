@@ -93,7 +93,7 @@ string User::writeToFile() const {
     //I'm using this to write the user's values to a text file
     stringstream floatConvert;
     floatConvert << average_reputation_score;
-    string output = to_string(regNo) + string(" ") + name + to_string(accumulative_reputation_score) + string(" ") + string(floatConvert.str());
+    string output = to_string(regNo) + string(" ") + name + string(" ") + to_string(accumulative_reputation_score) + string(" ") + string(floatConvert.str());
     floatConvert.clear();
     return output;
 }
