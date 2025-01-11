@@ -25,7 +25,7 @@ class User: public Person
 {   public:
             // constructor should initialise name and registration number using arguments
             // and initialise score map to be empty
-            User(const string &name, int regNo) : Person(name), regNo(regNo), accumulative_reputation_score(0), average_reputation_score(0), numOfModeratedPosts(0) {}
+            User(const string &name, int regNo);
 
         // method to return registration number
         int getRegNo() const;

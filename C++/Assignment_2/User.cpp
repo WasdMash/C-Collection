@@ -1,8 +1,19 @@
 #include "User.h"
 #include <iostream>
 #include <algorithm>
+#include <sstream> //Only needed to convert float to string
 
 using namespace std;
+
+// Constructor for the User class
+User::User(const string &name, int regNo) {
+    this->name = name;
+    this->regNo = regNo;
+    accumulative_reputation_score = 0;
+    average_reputation_score = 0;
+    numOfModeratedPosts = 0;
+    reputation_scores.clear();
+}
 
 // Getter for registration number
 int User::getRegNo() {
@@ -76,7 +87,7 @@ void User::updateScores(){
 }
 
 void User::addPostScore(pair<string, float>& currentPost){
-    if(!updateAccumulativeScore(currentPost->second)){
+    if(!updateAccumulativeScore(currentPost.second)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
             //Should probably throw an exception here to quit the for_Each
@@ -85,7 +96,10 @@ void User::addPostScore(pair<string, float>& currentPost){
 
 string User::writeToFile() const {
     //I'm using this to write the user's values to a text file
-    string output = to_string(regNo) + string(" ") + name + to_string(accumulative_reputation_score) + string(" ") + string(average_reputation_score);
+    stringstream floatConvert;
+    floatConvert << average_reputation_score;
+    string output = to_string(regNo) + string(" ") + name + to_string(accumulative_reputation_score) + string(" ") + string(floatConvert.str());
+    floatConvert.clear();
     return output;
 }
 
