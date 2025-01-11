@@ -14,9 +14,9 @@ int User::getRegNo() const{
 }
 
 // Method to add a score
-void User::addScore(float score, const string &postContent) {
-    reputation_scores.emplace(postContent, score);
-    if(!updateAccumulativeScore(currentPost.second)){
+void User::addScore(float score, string twit) {
+    reputation_scores.emplace(twit, score);
+    if(!updateAccumulativeScore(score)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
             //Should probably throw an exception here to quit the for_Each

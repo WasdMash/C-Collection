@@ -31,7 +31,7 @@ class User: public Person
         int getRegNo() const;
 
         // method to add the score to the map
-        void addScore(float score,string &twit);
+        void addScore(float score,string twit);
 
         // method to update the accumulative score map
         // should throw NoScoreException if user has no tweet yet
