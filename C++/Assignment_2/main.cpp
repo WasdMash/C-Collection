@@ -62,7 +62,7 @@ T login(string &username, ReadPosts& postManager) {
 
         ss >> regNo >> name >> surname;
         string fullName = name + " " + surname;
-        cout << regNo << endl;
+        cout << regNo << " " << to_string(regNo).length() << endl;
 
         if (to_string(regNo).length() == 9) {
             // User
