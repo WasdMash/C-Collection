@@ -101,17 +101,12 @@ string User::writeToFile() const {
 //This function can be called from outside
 void User::resetModeration(){
     numOfModeratedPosts = 0;
-    for(auto &post : reputation_scores){
-        resetModeratedPost(post);
+    for(auto &currentPost : reputation_scores){
+            if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
+            currentPost.first = currentPost.first.substr(currentPost.first.length() - 14);
+            currentPost.second = 100;
+        }
     }
     updateScores();
 }
 
-void resetModeratedPost(pair<string, float>& currentPost){
-    //We don't want to change the reported posts but just the previously moderated ones
-    if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
-        currentPost.first = currentPost.first.substr(currentPost.first.length() - 14)
-        currentPost.second = 100;
-    }
-    
-}

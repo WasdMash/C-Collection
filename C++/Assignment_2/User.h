@@ -63,9 +63,6 @@ class User: public Person
         //This method simply resets all moderated posts for this user whenever the blacklist gets cleared
         void resetModeration();
 
-        //Used in for_each to update each individual moderated post
-        void resetModeratedPost(pair<string, float>& currentPost);
-
     private:
 	   int regNo;
 	   string name;
