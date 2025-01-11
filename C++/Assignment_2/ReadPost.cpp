@@ -126,7 +126,7 @@ string ReadPosts::getPost(const string &userID) const
 }
 
 void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName){
-    ifstream blacklist(blacklistName); //This is the file from which we shall read all of our banned words/phrases line by line
+    ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
     string *currentBadWord = new string;
     while(getline(blacklist, *currentBadWord)){
         //Fetches the current naughty word/phrase
