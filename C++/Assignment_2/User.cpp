@@ -81,7 +81,7 @@ void User::updateScores(){
                   });
 }
 
-void User::addPostScore(const pair<string, float> currentPost){
+void User::addPostScore(const pair<string, float>& currentPost){
     if(!updateAccumulativeScore(currentPost.second)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
@@ -101,13 +101,11 @@ string User::writeToFile() const {
 //This function can be called from outside
 void User::resetModeration(){
     numOfModeratedPosts = 0;
-    for_each(reputation_scores.begin(), reputation_scores.end(), [this](const pair<string, float>& currentPost) {
-                      this->resetModeratedPost(currentPost);
-                  });
+    for_each(reputation_scores.begin(), reputation_scores.end(), resetModeratedPost);
     updateScores();
 }
 
-void resetModeratedPost(const pair<string, float>& currentPost){
+void resetModeratedPost(pair<string, float>& currentPost){
     //We don't want to change the reported posts but just the previously moderated ones
     if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
         currentPost.second = 100;
