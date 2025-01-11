@@ -190,6 +190,8 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 }
 
 void ReadPosts::updateTextFile(string postFileName){
+    if(!postfile.is_open) postfile.open(postFileName.c_str());
+
     postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
     string *currentLine = new string;
@@ -265,8 +267,12 @@ User& ReadPosts::nextUser(){
     //Now, I'll want to try to convert this to string or input directly into the file
 
     string formattedTime(output); //converts this time to a string
+    postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
     ofstream writer(postFileName, ios::app);
-    if(writer) writer << userID << " " << *newPostID << " " << postContent << " " << formattedTime << endl;
+    if(writer){
+        writer << userID << " " << *newPostID << " " << postContent << " " << formattedTime << endl;
+        writer.close();
+    } 
     else{
         //Fail to open the writer
         cout << "Failed to successfully write the new post to the database" << endl;
