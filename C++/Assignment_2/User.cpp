@@ -103,7 +103,7 @@ void User::resetModeration(){
     numOfModeratedPosts = 0;
     for(multimap<string,float>::iterator currentPost = reputation_scores.begin(); currentPost != reputation_scores.end(); currentPost++){
             if(currentPost->first.substr(currentPost->first.length() - 14) == "#moderatedpost"){
-            currentPost->first = currentPost->first.substr(currentPost.first.length() - 14);
+            currentPost->first = currentPost->first.substr(currentPost->first.length() - 14);
             currentPost->second = 100;
         }
     }
