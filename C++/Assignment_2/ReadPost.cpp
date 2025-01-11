@@ -239,9 +239,10 @@ void ReadPosts::updateTextFile(string postFileName){
         }  
     }
     //Renaming the new file to be the same as the old, effectively updating the same file
-    close();
-    newDatabase.close();
+    
     try{
+        postfile.close();
+        newDatabase.close();
         remove(postFileName.c_str());
         rename("temp.txt", postFileName.c_str());
     }
