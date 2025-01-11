@@ -267,7 +267,6 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
 
             count = (int)postManager.getUsers().size() > 10 ? 10 : (int)postManager.getUsers().size();
             for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + count, printUser);
-            delete newUsers;
             break;
         case 5:
             cout << "Goodbye!" << endl;
