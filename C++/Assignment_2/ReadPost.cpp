@@ -205,7 +205,8 @@ void ReadPosts::updateTextFile(string postFileName){
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
     string *currentLine = new string;
 
-    while(getline(postfile, *currentLine)){
+    while(!postfile.eof()){
+        getline(postfile, *currentLine)
         //Want to avoid errors caused by the newline character on the last line of the file
         if(!currentLine->empty()){
             string *userID = new string;
