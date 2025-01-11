@@ -147,7 +147,7 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
             }
         }
 
-        cout << *loweredPost << " - " < *currentBadWord << endl;
+        cout << *loweredPost << " - " << *currentBadWord << endl;
 
         //Check if the naughty is found within the post
         int foundBanPhrase = loweredPost->find(*currentBadWord);
