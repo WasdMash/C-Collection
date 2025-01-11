@@ -234,9 +234,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             //Should probably around this point run the moderation function on this text
             pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
             currentUser.addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
-            cout << "Printed a score" << endl;
             postManager.moderatePost(addedPost, blacklistName);
-            cout << "Moderating the post rn" << endl;
             postManager.updateTextFile(postFileName);
             cout << "Text file should be updarted now" << endl;
 

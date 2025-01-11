@@ -220,6 +220,8 @@ void ReadPosts::updateTextFile(string postFileName){
             getline(currentLineSS, *postContent); //Need to get the rest of the line and cut off when we first encounter a digit
                 //If we see a digit, then we have clearly managed to get the post content
 
+            cout << *userID << " " << *postID << " " << *postContent << " " << *postDate << endl;
+
             int *postContentEnd = new int;
             for(int i=0;i<postContent->length();i++){
                 if(isdigit((*postContent)[i])){
