@@ -266,7 +266,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                 //Lol, I forgot that I only need the 10 worst users
 
             count = (int)postManager.getUsers().size() > 10 ? 10 : (int)postManager.getUsers().size();
-            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + count, printUser);
+            for_each(postManager.getUsers().end() - count, postManager.getUsers().begin(), printUser);
             break;
         case 5:
             cout << "Goodbye!" << endl;
