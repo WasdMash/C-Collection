@@ -91,7 +91,7 @@ public:
 
   void moderatePost(const pair<string, string>& post, string blacklistName);
 
-  pair<string, string>& addPost(int userID, string postContent);
+  pair<const string, string>& addPost(int userID, string postContent, string postFileName);
 
   User& nextUser(); //used to iterate across and return the next user in the uesrs vector for us to do stuff with
 
