@@ -127,11 +127,17 @@ string ReadPosts::getPost(const string &userID) const
 
 void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName){
     ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
+
+    if(!blacklist){
+        cout << "We are unable to open the blacklist file" << endl;
+        return;
+    }
     string *currentBadWord = new string;
     while(getline(blacklist, *currentBadWord)){
         //Fetches the current naughty word/phrase
 
         string *loweredPost = new string;
+        *loweredPost = post.second;
         for(int i=0;i<loweredPost->length();i++){
             if(isalpha((*loweredPost)[i])){
                 //Only adding letters to username
@@ -191,6 +197,10 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 
 void ReadPosts::updateTextFile(string postFileName){
     if(!postfile.is_open()) postfile.open(postFileName.c_str());
+    if(!postfile){
+        cout << "We are unable to open up the text file again, so fix that" << endl;
+        return;
+    }
 
     postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
