@@ -12,6 +12,7 @@
         "list": "cpp",
         "utility": "cpp",
         "algorithm": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "map": "cpp"
     }
 }
