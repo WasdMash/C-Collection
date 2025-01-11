@@ -196,13 +196,12 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 }
 
 void ReadPosts::updateTextFile(string postFileName){
-    if(!postfile.is_open()) postfile.open(postFileName.c_str());
-    if(!postfile){
-        cout << "We are unable to open up the text file again, so fix that" << endl;
-        return;
+    if (postfile.is_open()) {
+        postfile.close();
     }
+    // Reopen the input file
+    postfile.open(postFileName.c_str());
 
-    postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
     string *currentLine = new string;
 
@@ -239,15 +238,15 @@ void ReadPosts::updateTextFile(string postFileName){
         }  
     }
     //Renaming the new file to be the same as the old, effectively updating the same file
-    
-    try{
-        postfile.close();
-        newDatabase.close();
-        remove(postFileName.c_str());
-        rename("temp.txt", postFileName.c_str());
-    }
-    catch(...){
-        cout << "This is the problem, silly" << endl;
+    // Close files before renaming
+    postfile.close();
+    newDatabase.close();
+
+    // Replace the old file with the new one
+    if (remove(postFileName.c_str()) != 0) {
+        cout << "Failed to remove the old file: " << postFileName << endl;
+    } else if (rename("temp.txt", postFileName.c_str()) != 0) {
+        cout << "Failed to rename the temporary file to: " << postFileName << endl;
     }
     
     //Pointer clean-up
