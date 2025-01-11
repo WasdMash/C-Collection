@@ -64,7 +64,7 @@ T login(string &username, ReadPosts& postManager) {
         string fullName = name + " " + surname;
         cout << regNo << " " << to_string(regNo).length() << endl;
 
-        if (to_string(regNo).length() == 9) {
+        if (to_string(regNo).length() == 8) {
             // User
             User newUser(fullName, regNo);
             //Should probably update their scores from ReadPosts here
