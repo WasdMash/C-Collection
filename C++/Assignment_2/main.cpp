@@ -168,6 +168,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
     //These will be used for an input of 4 but compielr throws a hissy fit due to scope if I declare them in a case statement
     vector<User> filteredUsers;
     vector<User>::iterator tempIt; //Temp iterator used to copy valid users into filteredUsers
+    int count = 0; //Used to get max 10 worst users
     
     while (choice != 5) {
         cout << "User Options:\n"
@@ -263,12 +264,9 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             sort(postManager.getUsers().begin(), postManager.getUsers().end());
             //I need to use for_each each to print out the details of each of the users here
                 //Lol, I forgot that I only need the 10 worst users
-            int *numUsers = new int;
-            int *count = new int;
-            *newUsers = (int)postManager.getUsers().size();
 
-            *count = *newUsers > 10 ? 10 : *newUsers;
-            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + *count, printUser);
+            count = (int)postManager.getUsers().size() > 10 ? 10 : (int)postManager.getUsers().size();
+            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + count, printUser);
             delete newUsers;
             break;
         case 5:
