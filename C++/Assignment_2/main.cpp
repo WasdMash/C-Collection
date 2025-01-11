@@ -62,7 +62,6 @@ T login(string &username, ReadPosts& postManager) {
 
         ss >> regNo >> name >> surname;
         string fullName = name + " " + surname;
-        cout << regNo << " " << to_string(regNo).length() << endl;
 
         if (to_string(regNo).length() == 8) {
             // User
@@ -107,7 +106,7 @@ T login(string &username, ReadPosts& postManager) {
         //To satisfy the compiler, let's check if the class we passed into the template function is a user
     if constexpr (is_same_v<T, User>){
         for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){ 
-            if(it->getName() == username){
+            if(toLowerCase(it->getName()) == toLowerCase(username)){
                 return *it;
             }
         }
