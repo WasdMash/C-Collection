@@ -248,15 +248,9 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             break;
         case 4:
             // Display top 10 problematic users
-            
-            for(tempIt = postManager.getUsers().begin(); tempIt != postManager.getUsers().end(); tempIt++){
-                if(tempIt->getReputation() >= 0){
-                    filteredUsers.push_back(*tempIt); //Add this valid user to the filteredUsers to be used later
-                }
-            }
-            sort(filteredUsers.begin(), filteredUsers.end());
+            sort(postManager.getUsers().begin(), postManager.getUsers().end());
             //I need to use for_each each to print out the details of each of the users here
-            for_each(filteredUsers.begin(), filteredUsers.end(), printUser);
+            for_each(postManager.getUsers().begin(), postManager.getUsers().end(), printUser);
             break;
         case 5:
             cout << "Goodbye!" << endl;
