@@ -206,7 +206,7 @@ void ReadPosts::updateTextFile(string postFileName){
     string *currentLine = new string;
 
     while(!postfile.eof()){
-        getline(postfile, *currentLine)
+        getline(postfile, *currentLine);
         //Want to avoid errors caused by the newline character on the last line of the file
         if(!currentLine->empty()){
             string *userID = new string;
