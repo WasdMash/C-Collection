@@ -190,7 +190,7 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 }
 
 void ReadPosts::updateTextFile(string postFileName){
-    if(!postfile.is_open) postfile.open(postFileName.c_str());
+    if(!postfile.is_open()) postfile.open(postFileName.c_str());
 
     postfile.seekg(0); //Setting the postFile back to the beginning
     ofstream newDatabase("temp.txt"); //Temporary file to write everything into
