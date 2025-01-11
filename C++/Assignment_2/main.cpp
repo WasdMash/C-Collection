@@ -240,7 +240,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
 
             vector<User> userVector = postManager.getUsers();
             for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
-                if(it->getRegNo() == stoi(postContent.first)){
+                if(it->getRegNo() == currentUser.getRegNo()){
                     //Updating the values stored in th iterable container ReadPosts class
                     it->addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
                     postManager.moderatePost(addedPost, blacklistName);
