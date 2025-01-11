@@ -84,9 +84,11 @@ T login(string &username, ReadPosts& postManager) {
             }
 
             delete loweredFullName; delete loweredUsername;
-        } else {
-            throw WrongFileFormatException();
         }
+        //Breaks the code immediately if a user ID looks off - need to double-check if this was wanted by examiner
+        /*else {
+            throw WrongFileFormatException();
+        }*/
     }
 
     //Let's check if our manager exists
@@ -105,8 +107,8 @@ T login(string &username, ReadPosts& postManager) {
     //Now let's check to see if any of these users is what we are looking for
         //To satisfy the compiler, let's check if the class we passed into the template function is a user
     if constexpr (is_same_v<T, User>){
-        cout << "We should dealing with users rn" << endl;
-        for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){ 
+        for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){
+            cout << toLowerCase(it->getName()) << " - " << toLowerCase(username) << endl;
             if(toLowerCase(it->getName()) == toLowerCase(username)){
                 return *it;
             }
