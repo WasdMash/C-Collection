@@ -101,7 +101,8 @@ string User::writeToFile() const {
 //This function can be called from outside
 void User::resetModeration(){
     numOfModeratedPosts = 0;
-    for_each(reputation_scores.begin(), reputation_scores.end(), [this](pair<string, float>& currentPost) { resetModeratedPost(currentPost); });
+    std::for_each(reputation_scores.begin(), reputation_scores.end(),
+                  [this](pair<string, float>& currentPost) { resetModeratedPost(currentPost); });
     updateScores();
 }
 
