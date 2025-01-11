@@ -264,10 +264,11 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             //I need to use for_each each to print out the details of each of the users here
                 //Lol, I forgot that I only need the 10 worst users
             int *numUsers = new int;
+            int *count = new int;
             *newUsers = (int)postManager.getUsers().size();
 
-            int count = *newUsers > 10 ? 10 : *newUsers;
-            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + count, printUser);
+            *count = *newUsers > 10 ? 10 : *newUsers;
+            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + *count, printUser);
             delete newUsers;
             break;
         case 5:
