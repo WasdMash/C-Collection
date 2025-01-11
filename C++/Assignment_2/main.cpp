@@ -346,17 +346,14 @@ int main() {
 
     try {
         User user = login<User>(username, postManager);
-        if(user.getRegNo() < 10000000000 && user.getRegNo() > 1000000000){
-            //The reg ID should be 9 digits, which is a user's ID
-            userOptions(user, postManager);
-        }
+        userOptions(user, postManager);
         
     } catch (const UserDontExistException &e) {
         cout << e.what() << endl;
         //This is where we should create the new user which doesn't exist yet
         string *newUserId = new string;
-        while(newUserId->length() != 9){
-            cout << "Enter new user ID (9 digits): ";
+        while(newUserId->length() != 8){
+            cout << "Enter new user ID (8 digits): ";
             cin.ignore();
             getline(cin, *newUserId);
             cin >> *newUserId;
