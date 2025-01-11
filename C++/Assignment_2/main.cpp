@@ -140,7 +140,7 @@ void updateUserDatabase(ReadPosts &postManager){
                     //Otherwise, we'll skip it for now and add the user info from the program to the file afterwards
                 if(ID->length() == 4){
                     //We have found a manager's details to copy to the new file
-                    newUserDatabase << *currentLine;
+                    newUserDatabase << *currentLine << endl;
                 }
                 delete ID;
             }
@@ -367,6 +367,7 @@ int main() {
         userFile << username << " " << *newUserId << endl;
 
         User user = login<User>(username, postManager);
+        updateUserDatabase(postManager);
         userOptions(user, postManager);
         
         delete newUserId;
