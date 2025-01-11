@@ -56,7 +56,7 @@ class User: public Person
         void updateScores();
 
         //This'll be the function I'll use inside of updateScores as part of the STL thing
-        void addPostScore(pair<string, float> currentPost);
+        void addPostScore(const pair<string, float>& currentPost);
 
         string writeToFile() const;
 

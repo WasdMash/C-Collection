@@ -76,10 +76,12 @@ void User::updateScores(){
     //This should update the user values
     average_reputation_score = 0.0;
     accumulative_reputation_score = 0.0; //Should reset the reputation scores to prevent over-exaggerated numbers
-    for_each(reputation_scores.begin(), reputation_scores.end(), addPostScore);
+    for_each(reputation_scores.begin(), reputation_scores.end(), [this](const pair<string, float>& currentPost) {
+                      this->addPostScore(currentPost);
+                  });
 }
 
-void User::addPostScore(pair<string, float> currentPost){
+void User::addPostScore(const pair<string, float> currentPost){
     if(!updateAccumulativeScore(currentPost.second)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
@@ -99,11 +101,13 @@ string User::writeToFile() const {
 //This function can be called from outside
 void User::resetModeration(){
     numOfModeratedPosts = 0;
-    for_each(reputation_scores.begin(), reputation_scores.end(), resetModeratedPost);
+    for_each(reputation_scores.begin(), reputation_scores.end(), [this](const pair<string, float>& currentPost) {
+                      this->resetModeratedPost(currentPost);
+                  });
     updateScores();
 }
 
-void resetModeratedPost(pair<string, float>& currentPost){
+void resetModeratedPost(const pair<string, float>& currentPost){
     //We don't want to change the reported posts but just the previously moderated ones
     if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
         currentPost.second = 100;
