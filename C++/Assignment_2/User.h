@@ -39,7 +39,7 @@ class User: public Person
 
             //On this post, the user should lose reputation for this post
                 //Should be -10 for a reported post and proportional to length of banned word/phrase for other cases
-        void loseReputation(string &postContent, int reputationLoss);
+        void loseReputation(string postContent, int reputationLoss);
 
         bool operator<(const User &other) const;
 

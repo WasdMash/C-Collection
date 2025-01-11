@@ -29,7 +29,7 @@ void User::addScore(float score, const string &postContent) {
 }
 
 // Method to lose reputation
-void User::loseReputation(const string &postContent, int reputationLoss) {
+void User::loseReputation(const string postContent, int reputationLoss) {
     auto it = reputation_scores.find(postContent);
     if (it != reputation_scores.end()) {
         it->second -= reputationLoss;
