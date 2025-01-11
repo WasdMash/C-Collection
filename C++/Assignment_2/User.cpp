@@ -4,15 +4,6 @@
 
 using namespace std;
 
-// Constructor for the User class
-User::User(const string &name, int regNo) {
-    this->name = name;
-    this->regNo = regNo;
-    accumulative_reputation_score = 0;
-    average_reputation_score = 0;
-    numOfModeratedPosts = 0;
-}
-
 // Getter for registration number
 int User::getRegNo() {
     return regNo;
@@ -85,7 +76,7 @@ void User::updateScores(){
 }
 
 void User::addPostScore(pair<string, float>& currentPost){
-    if(!updateAccumulativeScore(currentPost.second)){
+    if(!updateAccumulativeScore(currentPost->second)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
             //Should probably throw an exception here to quit the for_Each
@@ -107,7 +98,7 @@ void User::resetModeration(){
 
 void resetModeratedPost(pair<string, float>& currentPost){
     //We don't want to change the reported posts but just the previously moderated ones
-    if(currentPost.first.substr(strlen(currentPost.first) - 14) == "#moderatedpost"){
+    if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
         currentPost.second = 100;
     }
     
