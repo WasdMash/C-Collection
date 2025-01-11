@@ -86,7 +86,7 @@ void User::updateScores(){
     for_each(reputation_scores.begin(), reputation_scores.end(), addPostScore);
 }
 
-void User::addPostScore(pair<string, float>& currentPost){
+void User::addPostScore(pair<string, float> currentPost){
     if(!updateAccumulativeScore(currentPost.second)){
         //Output an error message saying that there are no reputation scores to update
         cout << "There are no reputation scores to update" << endl;
