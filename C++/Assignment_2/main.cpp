@@ -105,6 +105,7 @@ T login(string &username, ReadPosts& postManager) {
     //Now let's check to see if any of these users is what we are looking for
         //To satisfy the compiler, let's check if the class we passed into the template function is a user
     if constexpr (is_same_v<T, User>){
+        cout << "We should dealing with users rn" << endl;
         for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){ 
             if(toLowerCase(it->getName()) == toLowerCase(username)){
                 return *it;
