@@ -32,6 +32,14 @@ public:
     }
 };
 
+string toLowerCase(const string &str) {
+    string lowered;
+    for (char c : str) {
+        lowered += tolower(c);
+    }
+    return lowered;
+}
+
 // Global variables
 string postFileName = "Post_database.txt";
 string blacklistName = "blacklist.txt";
@@ -66,18 +74,8 @@ T login(string &username, ReadPosts& postManager) {
             string *loweredFullName = new string;
             string *loweredUsername = new string;
 
-            for(int i=0;i<fullName.length();i++){
-                if(isalpha(fullName[i])){
-                    //Only adding letters to username
-                    *loweredFullName += tolower(fullName[i]);
-                }
-            }
-            for(int i=0;i<username.length();i++){
-                if(isalpha(username[i])){
-                    //Only adding letters to username
-                    *loweredUsername += tolower(username[i]);
-                }
-            }
+            *loweredFullName = toLowerCase(fullName);
+            *loweredUsername = toLowerCase(username);
             
             if(*loweredFullName == *loweredUsername){
                 //Wait first before returning
