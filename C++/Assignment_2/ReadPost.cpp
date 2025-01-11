@@ -147,8 +147,6 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
             }
         }
 
-        cout << *loweredPost << " - " << *currentBadWord << endl;
-
         //Check if the naughty is found within the post
         int foundBanPhrase = loweredPost->find(*currentBadWord);
         if(foundBanPhrase != string::npos){
@@ -185,7 +183,6 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 
             //Should updated the original post to be later updated in the text file
             const_cast<string&>(post.second) = moderatedPost;
-            cout << post.second << endl; //Debugging line
         }
     }
     delete currentBadWord;
@@ -266,7 +263,7 @@ User& ReadPosts::nextUser(){
     time(&timestamp);
     datetime = localtime(&timestamp); //Converts the time into local time for the server
 
-    strftime(output, 50, "%F, %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
+    strftime(output, 50, "%F %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
     //Now, I'll want to try to convert this to string or input directly into the file
 
     string formattedTime(output); //converts this time to a string
