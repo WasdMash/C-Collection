@@ -1,6 +1,7 @@
 #include "User.h"
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <sstream> //Only needed to convert float to string
 
 using namespace std;
@@ -101,10 +102,10 @@ string User::writeToFile() const {
 //This function can be called from outside
 void User::resetModeration(){
     numOfModeratedPosts = 0;
-    for(auto &currentPost : reputation_scores){
-            if(currentPost.first.substr(currentPost.first.length() - 14) == "#moderatedpost"){
-            currentPost.first = currentPost.first.substr(currentPost.first.length() - 14);
-            currentPost.second = 100;
+    for(vector<string,float>::iterator currentPost = reputation_scores.begin(); currentPost != reputation_scores.end(); currentPost++){
+            if(currentPost->first.substr(currentPost->first.length() - 14) == "#moderatedpost"){
+            currentPost->first = currentPost->first.substr(currentPost.first.length() - 14);
+            currentPost->second = 100;
         }
     }
     updateScores();
