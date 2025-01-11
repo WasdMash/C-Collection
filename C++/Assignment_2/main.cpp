@@ -62,7 +62,7 @@ T login(string &username, ReadPosts& postManager) {
 
         ss >> regNo >> name >> surname;
         string fullName = name + " " + surname;
-        cout << fullName << endl;
+        cout << regNo << endl;
 
         if (to_string(regNo).length() == 9) {
             // User
@@ -77,7 +77,6 @@ T login(string &username, ReadPosts& postManager) {
 
             *loweredFullName = toLowerCase(fullName);
             *loweredUsername = toLowerCase(username);
-            cout << "Lowered: " << *loweredFullName << " User: " << *loweredFullName << endl;
             
             if(*loweredFullName == *loweredUsername){
                 //Wait first before returning
