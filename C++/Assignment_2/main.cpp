@@ -262,7 +262,10 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             // Display top 10 problematic users
             sort(postManager.getUsers().begin(), postManager.getUsers().end());
             //I need to use for_each each to print out the details of each of the users here
-            for_each(postManager.getUsers().begin(), postManager.getUsers().end(), printUser);
+                //Lol, I forgot that I only need the 10 worst users
+
+            int count = min(10, postManager.getUsers().size());
+            for_each(postManager.getUsers().begin(), postManager.getUsers().begin() + count, printUser);
             break;
         case 5:
             cout << "Goodbye!" << endl;
