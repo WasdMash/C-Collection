@@ -235,9 +235,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
             currentUser.addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
             postManager.moderatePost(addedPost, blacklistName);
-            cout << "Post is moderated" << endl;
             postManager.updateTextFile(postFileName);
-            cout << "Text file should be updarted now" << endl;
 
             currentUser.updateScores(); //Doesn't exist yet
             //Now, I should take the values from this current user and use them to update the values in the text file
