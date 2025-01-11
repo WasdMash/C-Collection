@@ -6,17 +6,10 @@
 using namespace std;
 
 // Constructor for the User class
-User::User(const string &name, int regNo) {
-    this->name = name;
-    this->regNo = regNo;
-    accumulative_reputation_score = 0;
-    average_reputation_score = 0;
-    numOfModeratedPosts = 0;
-    reputation_scores.clear();
-}
+User::User(const string &name, int regNo) : Person(name), regNo(regNo), accumulative_reputation_score(0), average_reputation_score(0), numOfModeratedPosts(0) {}
 
 // Getter for registration number
-int User::getRegNo() {
+int User::getRegNo() const{
     return regNo;
 }
 
