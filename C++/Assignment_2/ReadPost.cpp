@@ -182,7 +182,7 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
                 //Would be a lot easier to do once I've made this an iterable container
 
             //Should updated the original post to be later updated in the text file
-            const_cast<string&>(post.second) = moderatedPost;
+            post.second = moderatedPost;
         }
     }
     delete currentBadWord;

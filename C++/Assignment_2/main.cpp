@@ -379,7 +379,6 @@ int main() {
             }
         }
         catch(exception& e){
-            cout << e.what() << endl;
             cout << "We are unable to login this user as either a user or a manager, therefore, the program shall quit" << endl;
             exit(1);
         }
