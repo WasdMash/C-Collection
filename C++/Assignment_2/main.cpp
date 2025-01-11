@@ -233,11 +233,23 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
 
             //Should probably around this point run the moderation function on this text
             pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
-            currentUser.addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
-            postManager.moderatePost(addedPost, blacklistName);
-            postManager.updateTextFile(postFileName);
 
-            currentUser.updateScores(); //Doesn't exist yet
+            //Updating the values of the current users
+            it->addScore(100, addedPost.second);
+            it->updateScores();
+
+            vector<User> userVector = postManager.getUsers();
+            for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
+                if(it->getRegNo() == stoi(postContent.first)){
+                    //Updating the values stored in th iterable container ReadPosts class
+                    it->addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
+                    postManager.moderatePost(addedPost, blacklistName);
+                    postManager.updateTextFile(postFileName);
+                    it->updateScores();
+                    break;
+                }
+            }
+
             //Now, I should take the values from this current user and use them to update the values in the text file
             updateUserDatabase(postManager);
 

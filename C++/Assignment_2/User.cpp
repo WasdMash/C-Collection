@@ -53,7 +53,7 @@ void User::updatedModeratedPosts() {
 
 // Overloaded output operator
 ostream &operator<<(ostream &os, const User &user) {
-    os << "User: " << user.getName() << "\n Registration number: " << user.regNo << ")\n"
+    os << "User: " << user.getName() << "\n Registration number: " << user.regNo << "\n"
        << "Accumulative Reputation: " << user.accumulative_reputation_score << "\n"
        << "Average Reputation per Post: " << user.average_reputation_score << "\n"
        << "Number of Moderated Posts: " << user.numOfModeratedPosts << "\n";
