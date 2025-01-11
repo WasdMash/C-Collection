@@ -196,7 +196,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                 cin >> *readingPostChoice;
 
                 if(*readingPostChoice == "1") cout << "Fetching new post now..." << endl << endl;
-                if(*readingPostChoice == "2"){
+                else if(*readingPostChoice == "2"){
                     //The post is getting reported and the user who posted it will be punished
                     vector<User> userVector = postManager.getUsers();
                     for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
@@ -210,7 +210,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                         }
                     }
                 }
-                if(*readingPostChoice == "3"){
+                else if(*readingPostChoice == "3"){
                     cout << "Exiting the program now" << endl;
                     break; //Should take the user back to the main menu
                 }
