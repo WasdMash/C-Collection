@@ -235,8 +235,8 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
 
             //Updating the values of the current users
-            it->addScore(100, addedPost.second);
-            it->updateScores();
+            currentUser.addScore(100, addedPost.second);
+            currentUser.updateScores();
 
             vector<User> userVector = postManager.getUsers();
             for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
