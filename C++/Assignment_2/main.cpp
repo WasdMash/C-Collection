@@ -233,7 +233,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             }
 
             //Should probably around this point run the moderation function on this text
-            pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
+            pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost);
 
             //Updating the values of the current users
             currentUser.addScore(100, addedPost.second);
@@ -244,7 +244,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                 if(it->getRegNo() == currentUser.getRegNo()){
                     //Updating the values stored in th iterable container ReadPosts class
                     it->addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
-                    postManager.moderatePost(addedPost, blacklistName);
+                    postManager.moderatePost(addedPost, blacklistName, postFileName);
                     postManager.updateTextFile(postFileName);
                     it->updateScores();
                     break;
