@@ -125,7 +125,7 @@ string ReadPosts::getPost(const string &userID) const
     return "";  
 }
 
-void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName){
+void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName, const string postFileName){
     ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
 
     if(!blacklist){
@@ -193,6 +193,34 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
     }
     delete currentBadWord;
     //At this point, the text file should be updated accordingly
+
+    //I should probably write this to the postfile also
+    int *newPostID = new int; //Used to generate a random 10 digit ID
+    *newPostID = rand() % 10000000000;
+    if(*newPostID < 9000000000) *newPostID += 1000000000;
+    //I need to get the current time and store this in a string
+    
+    time_t timestamp; //Will store time in most basic format
+    char output[50]; //Stores the time as a string in a character buffer
+    struct tm * datetime; //Stores time as date and time format, rather than perhaps ticks
+
+    time(&timestamp);
+    datetime = localtime(&timestamp); //Converts the time into local time for the server
+
+    strftime(output, 50, "%F %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
+    //Now, I'll want to try to convert this to string or input directly into the file
+
+    string formattedTime(output); //converts this time to a string
+    postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
+    ofstream writer(postFileName, ios::app);
+    if(writer){
+        writer << endl << userID << "\t" << *newPostID << " " << post.second << " " << formattedTime;
+        writer.close();
+    } 
+    else{
+        //Fail to open the writer
+        cout << "Failed to successfully write the new post to the database" << endl;
+    }
 }
 
 void ReadPosts::updateTextFile(string postFileName){
@@ -264,38 +292,9 @@ User& ReadPosts::nextUser(){
     return *userIT;
 }
 
- pair<const string, string>& ReadPosts::addPost(int userID, string postContent, string postFileName){
+ pair<const string, string>& ReadPosts::addPost(int userID, string postContent){
     auto it = posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
-    //I should probably write this to the postfile also
-    int *newPostID = new int; //Used to generate a random 10 digit ID
-    *newPostID = rand() % 10000000000;
-    if(*newPostID < 9000000000) *newPostID += 1000000000;
-    //I need to get the current time and store this in a string
-    
-    time_t timestamp; //Will store time in most basic format
-    char output[50]; //Stores the time as a string in a character buffer
-    struct tm * datetime; //Stores time as date and time format, rather than perhaps ticks
-
-    time(&timestamp);
-    datetime = localtime(&timestamp); //Converts the time into local time for the server
-
-    strftime(output, 50, "%F %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
-    //Now, I'll want to try to convert this to string or input directly into the file
-
-    string formattedTime(output); //converts this time to a string
-    postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
-    ofstream writer(postFileName, ios::app);
-    if(writer){
-        writer << endl << userID << "\t" << *newPostID << " " << postContent << " " << formattedTime;
-        writer.close();
-    } 
-    else{
-        //Fail to open the writer
-        cout << "Failed to successfully write the new post to the database" << endl;
-    }
-
-
     return *it;
  }
 
