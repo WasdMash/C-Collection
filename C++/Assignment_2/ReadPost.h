@@ -89,9 +89,9 @@ public:
         Adds a #moderatedPost tag on the end of the post
    */
 
-  void moderatePost(const pair<string, string>& post, const string blacklistName, const string postFileName);
+  void moderatePost(const pair<string, string>& post, string blacklistName);
 
-  pair<const string, string>& addPost(int userID, string postContent);
+  pair<const string, string>& addPost(int userID, string postContent, string postFileName);
 
   User& nextUser(); //used to iterate across and return the next user in the uesrs vector for us to do stuff with
 

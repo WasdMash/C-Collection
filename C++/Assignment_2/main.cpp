@@ -233,7 +233,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             }
 
             //Should probably around this point run the moderation function on this text
-            pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost);
+            pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
 
             //Updating the values of the current users
             currentUser.addScore(100, addedPost.second);
@@ -244,7 +244,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
                 if(it->getRegNo() == currentUser.getRegNo()){
                     //Updating the values stored in th iterable container ReadPosts class
                     it->addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
-                    postManager.moderatePost(addedPost, blacklistName, postFileName);
+                    postManager.moderatePost(addedPost, blacklistName);
                     postManager.updateTextFile(postFileName);
                     it->updateScores();
                     break;
@@ -363,28 +363,6 @@ int main() {
         userOptions(user, postManager);
         
     } catch (const UserDontExistException &e) {
-        cout << e.what() << endl;
-        //This is where we should create the new user which doesn't exist yet
-        string *newUserId = new string;
-        while(newUserId->length() != 8){
-            cout << "Enter new user ID (8 digits): ";
-            cin.ignore();
-            getline(cin, *newUserId);
-            cin >> *newUserId;
-        }
-        //Adding this new user to the file
-        ofstream userFile("users.txt", ios::app);
-        userFile << username << " " << *newUserId << endl;
-
-        User user = login<User>(username, postManager);
-        updateUserDatabase(postManager);
-        userOptions(user, postManager);
-        
-        delete newUserId;
-
-    } catch (const WrongFileFormatException &e) {
-        cout << e.what() << endl;
-    } catch (...) {
         //If we are unable to log in as a user, then let's try as a manager instead
         try{
             Manager manager = login<Manager>(username, postManager);
@@ -394,12 +372,36 @@ int main() {
                 managerOptions(manager, postManager);
             }
         }
-        catch(exception& e){
-            cout << "We are unable to login this user as either a user or a manager, therefore, the program shall quit" << endl;
-            exit(1);
+        catch(UserDontExistException &e){
+            cout << e.what() << endl;
+            //This is where we should create the new user which doesn't exist yet
+            string *newUserId = new string;
+            while(newUserId->length() != 8){
+                cout << "Enter new user ID (8 digits): ";
+                cin.ignore();
+                getline(cin, *newUserId);
+                cin >> *newUserId;
+            }
+            //Adding this new user to the file
+            ofstream userFile("users.txt", ios::app);
+            userFile << username << " " << *newUserId << endl;
+
+            User user = login<User>(username, postManager);
+            updateUserDatabase(postManager);
+            userOptions(user, postManager);
+            
+            delete newUserId;
         }
-        
+    } catch (const WrongFileFormatException &e) {
+        cout << e.what() << endl;
+    } 
+    catch(...){
+        //If we are simply unable to login in, ten we might as well quit the code now
+        cout << "We are unable to login this user as either a user or a manager, therefore, the program shall quit" << endl;
+        exit(1);
     }
+        
+    
 
     return 0;
 }
