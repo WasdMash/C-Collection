@@ -53,8 +53,8 @@ T login(string &username, ReadPosts& postManager) {
     }
 
     string line;
-    string *managerName = new string;
-    int *managerID = new int;
+    string managerName;
+    int managerID = 0;
     while (getline(userFile, line)) {
         stringstream ss(line);
         int regNo;
@@ -79,8 +79,8 @@ T login(string &username, ReadPosts& postManager) {
             
             if(*loweredFullName == *loweredUsername){
                 //Wait first before returning
-                *managerName = fullName;
-                *managerID = regNo;
+                managerName = fullName;
+                managerID = regNo;
             }
 
             delete loweredFullName; delete loweredUsername;
@@ -95,14 +95,11 @@ T login(string &username, ReadPosts& postManager) {
     if (!managerName->empty()) {
         //Checking if the class type passed into the template function is the same as Manager
         if constexpr (is_same_v<T, Manager>) {
-            return Manager(*managerName, *managerID);
+            return Manager(managerName, managerID);
         } else {
             throw runtime_error("Requested type does not match the identified user type");
         }
     }
-
-    //If not, then let's delete the dynamic variables
-    delete managerName; delete managerID;
     
     //Now let's check to see if any of these users is what we are looking for
         //To satisfy the compiler, let's check if the class we passed into the template function is a user
