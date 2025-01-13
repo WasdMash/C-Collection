@@ -91,7 +91,7 @@ T login(string &username, ReadPosts& postManager) {
         }*/
     }
 
-    cout << constexpr (is_same_v<T, Manager>) << " " << constexpr (is_same_v<T, User>) << endl;
+    cout << is_same_v<T, Manager> << " " << is_same_v<T, User> << endl;
 
     //Let's check if our manager exists
     if (!managerName.empty()) {
