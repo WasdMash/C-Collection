@@ -89,9 +89,9 @@ public:
         Adds a #moderatedPost tag on the end of the post
    */
 
-  void moderatePost(const pair<string, string>& post, string blacklistName);
+  string moderatePost(string postContent, string blacklistName);
 
-  pair<const string, string>& addPost(int userID, string postContent, string postFileName);
+  void addPost(int userID, string postContent, string postFileName);
 
   User& nextUser(); //used to iterate across and return the next user in the uesrs vector for us to do stuff with
 
@@ -106,10 +106,34 @@ public:
   //This function will update the text file storing all of the posts
   void updateTextFile(string postFileName);
 
+  int getModerationScore(string postToModerate);
+
   //This function will automatically moderate all of the posts and update the text file accordingly
   void moderateAllPosts(string blacklistName, string postFileName){
     for(auto &post : posts){
-      moderatePost(post, blacklistName);
+      string newlyModeratedPost = moderatePost(post.second, blacklistName);
+      //Should update the new score post-moderation
+        //If the score is 100, then subtract 1 from the numModeratedPosts
+      //Can calculate the deducted score for this string by substracting 2 * numOfXs found
+      int oldModerationScore = getModerationScore(post.second);
+      int newModerationScore = getModerationScore(newlyModeratedPost);
+      
+      //Should update the numModeratedPosts for the relevant user
+      if(newModerationScore != oldModerationScore){ 
+        //Finding that relevant user and updating their info 
+        for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
+          if(it->getRegNo() == stoi(post.first)){
+              //THe post must have been falsely moderated so let's correct that
+              if(oldModerationScore < newModerationScore){
+                it->lessModeratedPosts();
+              }
+              //Should up the reputation for this post if corrected, otherwise dip it if the post just got moderated
+              it->loseReputation(post.second, oldModerationScore - newModerationScore);
+          }
+        }
+        post.second = newlyModeratedPost; //Should update post if it got flagged
+      }
+
     }
     updateTextFile(postFileName);
   }

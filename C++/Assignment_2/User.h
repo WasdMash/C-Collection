@@ -63,6 +63,10 @@ class User: public Person
         //This method simply resets all moderated posts for this user whenever the blacklist gets cleared
         void resetModeration();
 
+        void lessModeratedPosts(){
+            numOfModeratedPosts--;
+        }
+
     private:
 	   int regNo;
 	   string name;

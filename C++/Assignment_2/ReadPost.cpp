@@ -125,7 +125,7 @@ string ReadPosts::getPost(const string &userID) const
     return "";  
 }
 
-void ReadPosts::moderatePost(const pair<string, string>& post, const string blacklistName){
+string ReadPosts::moderatePost(string postContent, string blacklistName){
     ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
 
     if(!blacklist){
@@ -157,21 +157,6 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
         int foundBanPhrase = loweredPost->find(*currentBadWord);
         if(foundBanPhrase != string::npos){
             //We have found a bad word
-            cout << foundBanPhrase << endl;
-            //Don't forget to find the user with the same regNO and increment their number of moderated posts
-            for(vector<User>::iterator it=users.begin(); it != users.end(); it++){
-                if(to_string(it->getRegNo()) == post.first){
-                    //We have found the user who triggered a moderation in their posts
-                        //Therefore, let's punish them
-                        it->updatedModeratedPosts();
-                        int *postScore = new int;
-                        if(currentBadWord->length() < 100) *postScore = currentBadWord->length();
-                        else *postScore = 100;
-                        
-                        it->loseReputation(post.second, *postScore);
-                        delete postScore;
-                }
-            }
 
             int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
             string moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
@@ -186,13 +171,12 @@ void ReadPosts::moderatePost(const pair<string, string>& post, const string blac
 
             //Don't forget to come back to this and update the score of this user's post
                 //Would be a lot easier to do once I've made this an iterable container
-
-            //Should updated the original post to be later updated in the text file
-            const_cast<string&>(post.second) = moderatedPost;
         }
     }
     delete currentBadWord;
-    //At this point, the text file should be updated accordingly
+    
+    //Return the moderated post string
+    return moderatedPost;
 }
 
 void ReadPosts::updateTextFile(string postFileName){
@@ -264,8 +248,8 @@ User& ReadPosts::nextUser(){
     return *userIT;
 }
 
- pair<const string, string>& ReadPosts::addPost(int userID, string postContent, string postFileName){
-    auto it = posts.insert(pair<string, string>(to_string(userID), postContent));
+ void ReadPosts::addPost(int userID, string postContent, string postFileName){
+    posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
     //I should probably write this to the postfile also
     int *newPostID = new int; //Used to generate a random 10 digit ID
@@ -306,4 +290,13 @@ User& ReadPosts::nextUser(){
             user.addScore(100, it->second); //By default, each post should start with a reputation score of 100
         }
     }
+ }
+
+ int ReadPosts::getModerationScore(string postToModerate){
+    int moderatedScore = 100;
+    for(int i=0; i<postToModerate.length(); i++){
+        //Number of bad Xs found should punish the poster
+        if(postToModerate[i] == 'X') moderatedScore -= 2;
+    }
+    return moderatedScore;
  }

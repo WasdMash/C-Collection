@@ -228,19 +228,21 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
             }
 
             //Should probably around this point run the moderation function on this text
-            pair<const string, string>& addedPost =  postManager.addPost(currentUser.getRegNo(), newPost, postFileName);
+            string moderatedPost = postManager.moderatePost(newPost, blacklistName);
+            //Can calculate the deducted score for this string by substracting 2 * numOfXs found
+            int moderatedScore = postManager.getModerationScore(moderatedPost);
+            //Should get this post appended to the current postFileName
+            postManager.addPost(currentUser.getRegNo(), moderatedPost, postFileName);
 
             //Updating the values of the current users
-            currentUser.addScore(100, addedPost.second);
+            currentUser.addScore(moderatedScore, moderatedPost);
             currentUser.updateScores();
 
             vector<User> userVector = postManager.getUsers();
             for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
                 if(it->getRegNo() == currentUser.getRegNo()){
                     //Updating the values stored in th iterable container ReadPosts class
-                    it->addScore(100, addedPost.second); //The default score for each post should be 100 before moderation
-                    postManager.moderatePost(addedPost, blacklistName);
-                    postManager.updateTextFile(postFileName);
+                    it->addScore(moderatedScore, moderatedPost); //The default score for each post should be 100 before moderation
                     it->updateScores();
                     break;
                 }
