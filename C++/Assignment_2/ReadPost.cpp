@@ -127,7 +127,7 @@ string ReadPosts::getPost(const string &userID) const
 
 string ReadPosts::moderatePost(string postContent, string blacklistName){
     ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
-    string moderatedPost = "";
+    string moderatedPost = postContent;
 
     if(!blacklist){
         cout << "We are unable to open the blacklist file" << endl;
