@@ -258,14 +258,10 @@ User& ReadPosts::nextUser(){
     if(*newPostID < 9000000000) *newPostID += 1000000000;
     //I need to get the current time and store this in a string
     
-    time_t timestamp; //Will store time in most basic format
+    time_t timestamp = time(nullptr); //Will store time in most basic format
     char output[50]; //Stores the time as a string in a character buffer
-    struct tm * datetime; //Stores time as date and time format, rather than perhaps ticks
 
-    time(&timestamp);
-    datetime = localtime(&timestamp); //Converts the time into local time for the server
-
-    strftime(output, 50, "%F %T", datetime); //Should store time in output in format %Y-%m-%d %H:%M:%S
+    strftime(output, 50, "%F %T", localtime(&timestamp)); //Should store time in output in format %Y-%m-%d %H:%M:%S
     //Now, I'll want to try to convert this to string or input directly into the file
 
     string formattedTime(output); //converts this time to a string
