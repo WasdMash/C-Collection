@@ -256,7 +256,7 @@ User& ReadPosts::nextUser(){
     //I should probably write this to the postfile also
     int newPostID = 0; //Used to generate a random 10 digit ID
     newPostID = rand() % 10000000000;
-    if(*newPostID < 9000000000) *newPostID += 1000000000;
+    if(newPostID < 9000000000) newPostID += 1000000000;
     //I need to get the current time and store this in a string
     
     time_t timestamp = time(nullptr); //Will store time in most basic format
