@@ -127,6 +127,7 @@ string ReadPosts::getPost(const string &userID) const
 
 string ReadPosts::moderatePost(string postContent, string blacklistName){
     ifstream blacklist(blacklistName.c_str()); //This is the file from which we shall read all of our banned words/phrases line by line
+    string moderatedPost = "";
 
     if(!blacklist){
         cout << "We are unable to open the blacklist file" << endl;
@@ -137,7 +138,7 @@ string ReadPosts::moderatePost(string postContent, string blacklistName){
         //Fetches the current naughty word/phrase
 
         string *loweredPost = new string;
-        *loweredPost = post.second;
+        *loweredPost = postContent;
         for(int i=0;i<loweredPost->length();i++){
             if(isalpha((*loweredPost)[i])){
                 //Only adding letters to username
@@ -159,7 +160,7 @@ string ReadPosts::moderatePost(string postContent, string blacklistName){
             //We have found a bad word
 
             int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
-            string moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
+            moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
             for(int i=0; i<currentBadWord->length(); i++){
                 if((*currentBadWord)[i] != ' ') moderatedPost += "X"; //censoring the bad word here, of course
                 else moderatedPost += " "; //Want to make it clear that we aren't just censoring one big word
@@ -278,9 +279,6 @@ User& ReadPosts::nextUser(){
         //Fail to open the writer
         cout << "Failed to successfully write the new post to the database" << endl;
     }
-
-
-    return *it;
  }
 
  void ReadPosts::initialiseUserScores(User& user){
