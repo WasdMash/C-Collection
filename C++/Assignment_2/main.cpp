@@ -303,7 +303,7 @@ void managerOptions(Manager currentManager, ReadPosts& postManager) {
             cout << "Enter a word/phrase to block: ";
             cin.ignore();
             getline(cin, blockedWord);
-            blacklistFile << blockedWord << endl;
+            blacklistFile << endl << blockedWord;
 
             //I should automatically be moderating all of the posts
             postManager.moderateAllPosts(blacklistName, postFileName);
