@@ -94,9 +94,10 @@ T login(string &username, ReadPosts& postManager) {
     //Let's check if our manager exists
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
-        if !constexpr (is_same_v<T, User>) {
-            return Manager(managerName, managerID);
-        } else {
+        try{
+
+        }return Manager(managerName, managerID);
+        catch(...){
             throw runtime_error("Requested type does not match the identified user type");
         }
     }
