@@ -95,8 +95,8 @@ T login(string &username, ReadPosts& postManager) {
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
         try{
-
-        }return Manager(managerName, managerID);
+            return Manager(managerName, managerID);
+        }
         catch(...){
             throw runtime_error("Requested type does not match the identified user type");
         }
