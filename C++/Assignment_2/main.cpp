@@ -57,7 +57,7 @@ T login(string &username, ReadPosts& postManager) {
     int managerID = 0;
     while (getline(userFile, line)) {
         stringstream ss(line);
-        int regNo;
+        int regNo, accumulativeScore, averageScore;
         string name, surname;
 
         ss >> regNo >> name >> surname;
@@ -65,7 +65,9 @@ T login(string &username, ReadPosts& postManager) {
 
         if (to_string(regNo).length() == 8) {
             // User
-            User newUser(fullName, regNo);
+            ss >> accumulativeScore >> averageScore;
+            //Read also the accumulative and average reputation scores and store in object
+            User newUser(fullName, regNo, accumulativeScore, averageScore);
             //Should probably update their scores from ReadPosts here
             postManager.initialiseUserScores(newUser);
             postManager.addUser(newUser);
