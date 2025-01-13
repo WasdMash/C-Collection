@@ -41,6 +41,7 @@ class FoundManagerException: public exception{
         FoundManagerException(const string username, const int &regNo): username(username), regNo(regNo) {}
 
         Manager getManager() const throw(){
+            cout << username << " " << regNo << endl;
             return Manager(username, regNo);
         }
 
@@ -406,9 +407,7 @@ int main() {
         }
         catch(FoundManagerException &e){
             //Annoyingly, if the const expr decides to be a pain, I can catch the appropiate 'error' and log in managers anyways
-            Manager newManager = e.getManager();
-            cout << newManager.getRegNo() << endl;
-            managerOptions(newManager, postManager);
+            managerOptions(e.getManager(), postManager);
         }
     } catch (const WrongFileFormatException &e) {
         cout << e.what() << endl;
