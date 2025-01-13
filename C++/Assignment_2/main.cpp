@@ -40,7 +40,7 @@ class FoundManagerException: public exception{
     public:
         FoundManagerException(const string username, const int &regNo): username(username), regNo(regNo) {}
 
-        const Manager getManager() const throw(){
+        Manager getManager() const throw(){
             return Manager(username, regNo);
         }
 
@@ -290,7 +290,7 @@ void userOptions(User &currentUser, ReadPosts& postManager) {
 }
 
 // Manager options menu
-void managerOptions(Manager &currentManager, ReadPosts& postManager) {
+void managerOptions(Manager currentManager, ReadPosts& postManager) {
     int choice = 0;
 
     while (choice != 5) {
