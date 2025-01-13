@@ -121,7 +121,7 @@ public:
       //Should update the numModeratedPosts for the relevant user
       if(newModerationScore != oldModerationScore){ 
         //Finding that relevant user and updating their info 
-        for(vector<User>::iterator it = userVector.begin(); it != userVector.end(); it++){
+        for(vector<User>::iterator it = users.begin(); it != users.end(); it++){
           if(it->getRegNo() == stoi(post.first)){
               //THe post must have been falsely moderated so let's correct that
               if(oldModerationScore < newModerationScore){
