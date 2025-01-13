@@ -38,7 +38,7 @@ class FoundManagerException: public exception{
         int regNo;
 
     public:
-        FoundManagerException(const string &username, const int &regNo): username(username), regNo(regNo) {}
+        FoundManagerException(const string username, const int &regNo): username(username), regNo(regNo) {}
 
         Manager getManager() const throw(){
             return Manager(username, regNo);
