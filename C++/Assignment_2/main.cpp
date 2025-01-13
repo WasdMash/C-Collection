@@ -406,7 +406,9 @@ int main() {
         }
         catch(FoundManagerException &e){
             //Annoyingly, if the const expr decides to be a pain, I can catch the appropiate 'error' and log in managers anyways
-            managerOptions(e.getManager(), postManager);
+            Manager newManager = e.getManager();
+            cout << newManager.getRegNo() << endl;
+            managerOptions(newManager, postManager);
         }
     } catch (const WrongFileFormatException &e) {
         cout << e.what() << endl;
