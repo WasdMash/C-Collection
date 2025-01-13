@@ -94,8 +94,7 @@ T login(string &username, ReadPosts& postManager) {
     //Let's check if our manager exists
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
-        cout << is_same_v<T, Manager> << " " << is_same_v<T, User> << endl;
-        if constexpr (is_same_v<T, Manager>) {
+        if constexpr (is_same_v<T, User>) {
             return Manager(managerName, managerID);
         } else {
             throw runtime_error("Requested user type is neither a user nor a manager");
