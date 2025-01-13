@@ -76,6 +76,8 @@ T login(string &username, ReadPosts& postManager) {
 
             *loweredFullName = toLowerCase(fullName);
             *loweredUsername = toLowerCase(username);
+
+            cout << *loweredFullName << " - " << *loweredUsername << endl;
             
             if(*loweredFullName == *loweredUsername){
                 //Wait first before returning
@@ -95,6 +97,7 @@ T login(string &username, ReadPosts& postManager) {
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
         if constexpr (is_same_v<T, Manager>) {
+            cout << "Printing manager" << endl;
             return Manager(managerName, managerID);
         } else {
             throw runtime_error("Requested type does not match the identified user type");
