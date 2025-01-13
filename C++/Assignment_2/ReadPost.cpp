@@ -131,7 +131,7 @@ string ReadPosts::moderatePost(string postContent, string blacklistName){
 
     if(!blacklist){
         cout << "We are unable to open the blacklist file" << endl;
-        return;
+        return "";
     }
     string *currentBadWord = new string;
     while(getline(blacklist, *currentBadWord)){
@@ -160,13 +160,13 @@ string ReadPosts::moderatePost(string postContent, string blacklistName){
             //We have found a bad word
 
             int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
-            moderatedPost = post.second.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
+            moderatedPost = postContent.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
             for(int i=0; i<currentBadWord->length(); i++){
                 if((*currentBadWord)[i] != ' ') moderatedPost += "X"; //censoring the bad word here, of course
                 else moderatedPost += " "; //Want to make it clear that we aren't just censoring one big word
             }
             //Adding the rest of the string back to censor only part of it
-            moderatedPost += post.second.substr(endIndex, post.second.length());
+            moderatedPost += postContent.substr(endIndex, postContent.length());
             //Adding the cute #moderatedpost tag at the end
             moderatedPost += " #moderatedpost";
 
