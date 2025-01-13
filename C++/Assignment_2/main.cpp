@@ -44,7 +44,7 @@ class FoundManagerException: public exception{
             return Manager(username, regNo);
         }
 
-}
+};
 
 string toLowerCase(const string &str) {
     string lowered;
