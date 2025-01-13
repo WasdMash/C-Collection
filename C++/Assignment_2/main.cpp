@@ -69,7 +69,7 @@ T login(string &username, ReadPosts& postManager) {
             //Should probably update their scores from ReadPosts here
             postManager.initialiseUserScores(newUser);
             postManager.addUser(newUser);
-        } else if (to_string(regNo).length() == 4) {
+        } else if (to_string(regNo).length() <= 4) {
             // Manager
             string *loweredFullName = new string;
             string *loweredUsername = new string;
@@ -138,7 +138,7 @@ void updateUserDatabase(ReadPosts &postManager){
                 currentLineSS >> *ID;
                 //If the ID is 4 digits, then it's a manager and we'll copy their details to the new file
                     //Otherwise, we'll skip it for now and add the user info from the program to the file afterwards
-                if(ID->length() == 4){
+                if(ID->length() <= 4){
                     //We have found a manager's details to copy to the new file
                     newUserDatabase << *currentLine << endl;
                 }
