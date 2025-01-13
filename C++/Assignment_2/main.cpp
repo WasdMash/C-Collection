@@ -97,7 +97,7 @@ T login(string &username, ReadPosts& postManager) {
         if (is_same_v<T, Manager>) {
             return Manager(managerName, managerID);
         } else {
-            throw("Requested user type is neither a user nor a manager");
+            throw runtime_error("Requested user type is neither a user nor a manager");
         }
     }
     
