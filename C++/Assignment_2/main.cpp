@@ -91,10 +91,12 @@ T login(string &username, ReadPosts& postManager) {
         }*/
     }
 
+    cout << constexpr (is_same_v<T, Manager>) << " " << constexpr (is_same_v<T, User>) << endl;
+
     //Let's check if our manager exists
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
-        if (is_same_v<T, Manager>) {
+        if constexpr (is_same_v<T, Manager>) {
             return Manager(managerName, managerID);
         } else {
             throw runtime_error("Requested user type is neither a user nor a manager");
@@ -103,7 +105,7 @@ T login(string &username, ReadPosts& postManager) {
     
     //Now let's check to see if any of these users is what we are looking for
         //To satisfy the compiler, let's check if the class we passed into the template function is a user
-    if (is_same_v<T, User>){
+    if constexpr (is_same_v<T, User>){
         for(vector<User>::iterator it = postManager.getUsers().begin(); it != postManager.getUsers().end(); it++){
             if(toLowerCase(it->getName()) == toLowerCase(username)){
                 return *it;
