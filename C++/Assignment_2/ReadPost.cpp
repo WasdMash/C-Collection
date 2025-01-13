@@ -281,7 +281,7 @@ User& ReadPosts::nextUser(){
 
  void ReadPosts::initialiseUserScores(User& user){
     for(multimap<string, string>::iterator it = posts.begin(); it != posts.end(); it++){
-        if(to_string(user.getRegNo()) == it->first){
+        if(user.getRegNo() == stoi(it->first)){
             //If this post was written by the user
             user.addScore(100, it->second); //By default, each post should start with a reputation score of 100
         }
