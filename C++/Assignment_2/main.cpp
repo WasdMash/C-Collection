@@ -395,7 +395,8 @@ int main() {
     } catch (const WrongFileFormatException &e) {
         cout << e.what() << endl;
     } 
-    catch(...){
+    catch(exception &e){
+        cout << e.what() << endl; //Trying to see general proble,
         //If we are simply unable to login in, ten we might as well quit the code now
         cout << "We are unable to login this user as either a user or a manager, therefore, the program shall quit" << endl;
         exit(1);
