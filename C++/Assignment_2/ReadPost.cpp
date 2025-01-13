@@ -280,6 +280,7 @@ User& ReadPosts::nextUser(){
         cout << "Failed to successfully write the new post to the database" << endl;
     }
     postfile.open(postFileName.c_str());
+    delete newPostID;
  }
 
  void ReadPosts::initialiseUserScores(User& user){
