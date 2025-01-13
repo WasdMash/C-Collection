@@ -93,7 +93,12 @@ T login(string &username, ReadPosts& postManager) {
 
     //Let's check if our manager exists
     if (!managerName->empty()) {
-        return Manager(*managerName, *managerID);
+        //Checking if the class type passed into the template function is the same as Manager
+        if constexpr (is_same_v<T, Manager>) {
+            return Manager(*managerName, *managerID);
+        } else {
+            throw runtime_error("Requested type does not match the identified user type");
+        }
     }
 
     //If not, then let's delete the dynamic variables
