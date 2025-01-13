@@ -253,8 +253,8 @@ User& ReadPosts::nextUser(){
     posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
     //I should probably write this to the postfile also
-    int *newPostID = new int; //Used to generate a random 10 digit ID
-    *newPostID = rand() % 10000000000;
+    int newPostID = 0; //Used to generate a random 10 digit ID
+    newPostID = rand() % 10000000000;
     if(*newPostID < 9000000000) *newPostID += 1000000000;
     //I need to get the current time and store this in a string
     
@@ -268,7 +268,7 @@ User& ReadPosts::nextUser(){
     postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
     ofstream writer(postFileName, ios::app);
     if(writer){
-        writer << endl << userID << "\t" << *newPostID << " " << postContent << " " << formattedTime;
+        writer << endl << userID << "\t" << newPostID << " " << postContent << " " << formattedTime;
         writer.close();
     } 
     else{
@@ -276,7 +276,6 @@ User& ReadPosts::nextUser(){
         cout << "Failed to successfully write the new post to the database" << endl;
     }
     postfile.open(postFileName.c_str());
-    delete newPostID;
  }
 
  void ReadPosts::initialiseUserScores(User& user){
