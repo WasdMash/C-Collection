@@ -279,6 +279,7 @@ User& ReadPosts::nextUser(){
         //Fail to open the writer
         cout << "Failed to successfully write the new post to the database" << endl;
     }
+    postfile.open(postFileName.c_str());
  }
 
  void ReadPosts::initialiseUserScores(User& user){
