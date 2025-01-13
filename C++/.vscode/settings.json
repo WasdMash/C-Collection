@@ -16,6 +16,7 @@
         "map": "cpp",
         "xmemory": "cpp",
         "xtr1common": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "fstream": "cpp"
     }
 }

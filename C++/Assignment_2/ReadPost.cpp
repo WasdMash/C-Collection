@@ -250,6 +250,7 @@ User& ReadPosts::nextUser(){
 }
 
  void ReadPosts::addPost(int userID, string postContent, string postFileName){
+    postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
     posts.insert(pair<string, string>(to_string(userID), postContent));
     //The new post that we just added should be at the end of the multimap, so we just return that
     //I should probably write this to the postfile also
@@ -265,7 +266,7 @@ User& ReadPosts::nextUser(){
     //Now, I'll want to try to convert this to string or input directly into the file
 
     string formattedTime(output); //converts this time to a string
-    postfile.close(); //To prevent clashes with ifstream and ofstream perhaps
+    
     ofstream writer(postFileName, ios::app);
     if(writer){
         writer << endl << userID << "\t" << newPostID << " " << postContent << " " << formattedTime;
