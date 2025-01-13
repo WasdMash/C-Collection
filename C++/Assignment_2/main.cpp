@@ -32,6 +32,20 @@ public:
     }
 };
 
+class FoundManagerException: public exception{
+    private:
+        string username;
+        int regNo;
+
+    public:
+        FoundManagerException(const string &username, const int &regNo): username(username), regNo(regNo) {}
+
+        const Manager getManager const throw(){
+            return Manager(username, regNo);
+        }
+
+}
+
 string toLowerCase(const string &str) {
     string lowered;
     for (char c : str) {
@@ -94,10 +108,10 @@ T login(string &username, ReadPosts& postManager) {
     //Let's check if our manager exists
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
-        if constexpr (!is_same_v<T, Manager>) {
+        if constexpr (is_same_v<T, Manager>) {
             return Manager(managerName, managerID);
         } else {
-            throw runtime_error("Requested user type is neither a user nor a manager");
+            throw FoundManagerException(managerName, managerID);
         }
     }
     
@@ -389,6 +403,10 @@ int main() {
             userOptions(user, postManager);
             
             delete newUserId;
+        }
+        catch(FoundManagerException &e){
+            //Annoyingly, if the const expr decides to be a pain, I can catch the appropiate 'error' and log in managers anyways
+            managerOptions(e.getManager(), postManager);
         }
     } catch (const WrongFileFormatException &e) {
         cout << e.what() << endl;
