@@ -160,13 +160,13 @@ string ReadPosts::moderatePost(string postContent, string blacklistName){
             //We have found a bad word
 
             int endIndex = foundBanPhrase + currentBadWord->length(); //Need to know when to stop printing Xs
-            moderatedPost = postContent.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
+            moderatedPost = moderatedPost.substr(0, foundBanPhrase); //The start part of the unmoderated post before naughty word
             for(int i=0; i<currentBadWord->length(); i++){
                 if((*currentBadWord)[i] != ' ') moderatedPost += "X"; //censoring the bad word here, of course
                 else moderatedPost += " "; //Want to make it clear that we aren't just censoring one big word
             }
             //Adding the rest of the string back to censor only part of it
-            moderatedPost += postContent.substr(endIndex, postContent.length());
+            moderatedPost += moderatedPost.substr(endIndex, moderatedPost.length());
             //Adding the cute #moderatedpost tag at the end
             moderatedPost += " #moderatedpost";
 
