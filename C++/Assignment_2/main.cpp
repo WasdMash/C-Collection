@@ -91,11 +91,10 @@ T login(string &username, ReadPosts& postManager) {
         }*/
     }
 
-    cout << is_same_v<T, Manager> << " " << is_same_v<T, User> << endl;
-
     //Let's check if our manager exists
     if (!managerName.empty()) {
         //Checking if the class type passed into the template function is the same as Manager
+        cout << is_same_v<T, Manager> << " " << is_same_v<T, User> << endl;
         if constexpr (is_same_v<T, Manager>) {
             return Manager(managerName, managerID);
         } else {
@@ -364,6 +363,7 @@ int main() {
     } catch (const UserDontExistException &e) {
         //If we are unable to log in as a user, then let's try as a manager instead
         try{
+            postManager.clearUsers();
             Manager manager = login<Manager>(username, postManager);
             //Should check down here if user is a user or a manager
             if(manager.getRegNo() < 10000){

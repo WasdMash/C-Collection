@@ -117,6 +117,10 @@ public:
   //Gets the user's scores from the posts multimap and initialises their scores before the rest of the program runs
   void initialiseUserScores(User& user);
 
+  void clearUsers(){
+    users.clear();
+  }
+
 private:
     ifstream postfile;
     multimap<string, string> posts; // Keyed by userID, value is a string representing the post
