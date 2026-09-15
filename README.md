@@ -1,2 +1,3 @@
 This repository contains multiple projects demonstrating my comfort in programming in C++, making a project for each fundamental C++ concept, from pointers and arrays to exceptions and template functions.
 One of my bigger projects within this repository would be the LibraryManagement project, where I combine multiple concepts to create a terminal-based library manager where books and authors can be logged and searched for within a database.
+My other biggest project, within the Assignment_2 folder, is a terminal-based social media platform where users can upload posts, upvote/downvote certain posts and view the 100 most popular votes (determined by having the most upvotes). All of the information is currently stored in a text file, which I believe that I have encrypted.
