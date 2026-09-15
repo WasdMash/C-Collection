@@ -1,0 +1,2 @@
+This repository contains multiple projects demonstrating my comfort in programming in C++, making a project for each fundamental C++ concept, from pointers and arrays to exceptions and template functions.
+One of my bigger projects within this repository would be the LibraryManagement project, where I combine multiple concepts to create a terminal-based library manager where books and authors can be logged and searched for within a database.
